@@ -281,11 +281,11 @@ for parity in ['A', 'H']:
 		ensure_drawn = make_plot(subset, 'mass',  maxg_values)
 	
 		wname = val2name(width)
-		plt.savefig(
-			'limit_%s_%s.pdf' % (parity, wname),
-			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
-			bbox_inches='tight'
-		)
+		#plt.savefig(
+		#	'limit_%s_%s.pdf' % (parity, wname),
+		#	bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
+		#	bbox_inches='tight'
+		#)
 		plt.savefig(
 			'limit_%s_%s.png' % (parity, wname),
 			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn

@@ -23,7 +23,7 @@ args = parser.parse_args()
 if not os.path.isdir(args.outdir):
 	os.makedirs(args.outdir)
 
-do_not_remove = set(args.doNotRemove.split(','))
+do_not_remove = set(args.doNotRemove.split(',')) if args.doNotRemove else set()
 
 masses = [str(j) for j in arange(*[int(i) for i in args.masses.split(':')])] \
 	if ':' in args.masses else args.masses.split(',')
