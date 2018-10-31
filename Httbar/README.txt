@@ -4,19 +4,19 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 1. Computing model independent limits:
    a) for single (mass, width) point for A/H boson:
 
-    python /afs/cern.ch/user/j/jdulemba/CMSSW_8_1_0/bin/slc6_amd64_gcc530/single_point_limit.py 'jobid' 'parity(A/H)' 'mass' 'width' --runScan --twoPars --barlowBeeston --keep
+    python /afs/cern.ch/user/j/jdulemba/Htt_4PJ_Limit/CMSSW_8_1_0/bin/slc6_amd64_gcc530/single_point_limit.py 'jobid' 'parity(A/H)' 'mass' 'width' --runScan --twoPars --barlowBeeston --keep --channels=lj
 
 
    b) for multiple  points:
 
-    python scripts/batch_independent_scan.py 'jobid' 'outdir' 'parities' 'masses' 'widths' --runScan --twoPars --barlowBeeston
+    python scripts/batch_independent_scan.py 'jobid' 'outdir' 'parities' 'masses' 'widths' --runScan --twoPars --barlowBeeston --channels=lj
     
     -creates condor.jdl file in 'jobid' that needs to be submitted with 'condor_submit condor.jdl'
 
 
 2. Checking output root files for correctness:
 
-   python scripts/batch_independent_check_from_root.py 'jobid'
+   python scripts/batch_independent_check_from_root.py 'outdir'
 
    a) If files didn't finish correctly a condor.rescue.jdl file will be created, resubmit it
    b) If files finished correctly a summary.npy file will be created that has all the limit info

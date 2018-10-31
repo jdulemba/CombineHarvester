@@ -141,6 +141,7 @@ def make_plot(subset, xvar, maxg_values=None):
 		# alpha = obs_color[3]
 		# patch_color = [i*alpha+1.*(1-alpha) for i in obs_color]
 		# patch_color[3] = 1.
+		#set_trace()
 		upper_contour =  np.array([val if val < 3. else y_leg_cutoff for val in subset['obslower']])
 		observed_contour = plt.fill_between(subset[xvar], subset['obs'], upper_contour, color=obs_color)
 		observed_contour = plt.fill_between(subset[xvar], subset['obsupper'], [y_leg_cutoff for n in xrange(len(subset['obsupper']))], color=obs_color)
@@ -155,6 +156,7 @@ def make_plot(subset, xvar, maxg_values=None):
 			color='k', linestyle='None'#, markersize=10, marker='.'
 			)
 		
+		#set_trace()
 		legend_border = plt.plot([x_min, x_max], [y_leg_cutoff, y_leg_cutoff], color='k', linestyle='-', linewidth=2)
 
 		if maxg_values is not None:
@@ -259,6 +261,7 @@ widths = sorted(list(set(limits['width'])))
 onesigma = '#00f847'
 twosigma = '#fffc4d'
 line = '#ff1521'
+#set_trace()
 
 for parity in ['A', 'H']:
 	for width in widths:
@@ -278,6 +281,7 @@ for parity in ['A', 'H']:
 		maxg_values = [(mass, max_g(parity, mass, width/100.)) for mass in np.arange(min(masses), max(masses)+5., 5.)]
 
 
+		#set_trace()
 		ensure_drawn = make_plot(subset, 'mass',  maxg_values)
 	
 		wname = val2name(width)
@@ -320,11 +324,12 @@ for parity in ['A', 'H']:
 
 		ensure_drawn = make_plot(subset, 'width', maxg_values)
 	
-		plt.savefig(
-			'limit_%s_M%s.pdf' % (parity, mass),
-			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
-			bbox_inches='tight'
-		)
+		#if (parity, mass) == ('A', 750): set_trace()
+		#plt.savefig(
+		#	'limit_%s_M%s.pdf' % (parity, mass),
+		#	bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
+		#	bbox_inches='tight'
+		#)
 		plt.savefig(
 			'limit_%s_M%s.png' % (parity, mass),
 			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
