@@ -18,6 +18,7 @@ parser.add_argument('--nokfactors', action='store_true')
 parser.add_argument('--runScan', action='store_true')
 parser.add_argument('--twoPars', action='store_true')
 parser.add_argument('--barlowBeeston', action='store_true')
+parser.add_argument('--channels', default='', help='leptonic decay type')
 args = parser.parse_args()
 
 if not os.path.isdir(args.outdir):
@@ -45,7 +46,7 @@ executable = %s
 Output = con_{idx}.out
 Error = con_{idx}.err
 Log = con_{idx}.log
-Arguments = {jobid} {parity} {mass} {width} {blind} {keep} {kfactor} {scan} {twoPars} {bb}
+Arguments = {jobid} {parity} {mass} {width} {blind} {keep} {kfactor} {scan} {twoPars} {bb} {channels}
 Queue
 '''.format(
 				idx=idx,
@@ -59,5 +60,6 @@ Queue
 				scan='--runScan' if args.runScan else '',
 				twoPars='--twoPars' if args.twoPars else '',
 				bb='--barlowBeeston' if args.barlowBeeston else '',
+				channels="--channels={}".format(args.channels) if args.channels else '',
 				))
 				idx += 1
