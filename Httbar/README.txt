@@ -4,7 +4,7 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 1. Computing model independent limits:
    a) for single (mass, width) point for A/H boson:
 
-    python /afs/cern.ch/user/j/jdulemba/Htt_4PJ_Limit/CMSSW_8_1_0/bin/slc6_amd64_gcc530/single_point_limit.py 'jobid' 'parity(A/H)' 'mass' 'width' --runScan --twoPars --barlowBeeston --keep --channels=lj
+    python /afs/cern.ch/user/j/jdulemba/Htt_3J_Limit/CMSSW_8_1_0/bin/slc6_amd64_gcc530/single_point_limit.py 'jobid' 'parity(A/H)' 'mass' 'width' --runScan --twoPars --barlowBeeston --keep --channels=lj
 
 
    b) for multiple  points:
