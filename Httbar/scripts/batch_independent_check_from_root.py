@@ -46,6 +46,8 @@ for key, submit in block_map.iteritems():
             summary[key] = {}
             continue
         
+        #set_trace()
+        
         limits = rfile.Get('limit')
         lims = ['obs', 'exp-2', 'exp-1', 'exp0', 'exp+1', 'exp+2']
         quantiles = [-1, 0.025, 0.160, 0.5, 0.840, 0.975]
@@ -53,7 +55,6 @@ for key, submit in block_map.iteritems():
         # d_lower_limits = {lim:[] for lim in lims}
         # limit_previous = {lim:1. for lim in lims}
 
-        
         
         all_cls = [[] for _ in range(len(lims))]
 
