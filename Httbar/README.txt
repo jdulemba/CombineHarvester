@@ -11,7 +11,8 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 
     python scripts/batch_independent_scan.py 'jobid' 'outdir' 'parities' 'masses' 'widths' --runScan --twoPars --barlowBeeston --channels=lj
     
-    -creates condor.jdl file in 'jobid' that needs to be submitted with 'condor_submit condor.jdl'
+    -creates condor.jdl file in 'outdir' that needs to be submitted with 'condor_submit condor.jdl'
+    -'jobid' is jobid from FNAL used to name templates 
 
 
 2. Checking output root files for correctness:
@@ -24,7 +25,7 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 3. Making plots:
 
    a) To make limits plots:
-	From within the 'jobid' directory, execute
+	From within 'outdir', execute
 	
 	python ../scripts/model_independent_limits_ext.py summary.npy
 
