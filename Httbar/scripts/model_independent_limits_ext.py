@@ -16,10 +16,15 @@ plt.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 import matplotlib.ticker as ticker
+import os
 
 parser = ArgumentParser()
 parser.add_argument('input')
 args = parser.parse_args()
+
+if not os.path.isdir('limits'):
+        os.makedirs('limits')
+
 
 # Stolen from Andrey
 def max_g(cp, phi_mass, rel_width):
@@ -291,7 +296,7 @@ for parity in ['A', 'H']:
 		#	bbox_inches='tight'
 		#)
 		plt.savefig(
-			'limit_%s_%s.png' % (parity, wname),
+			'limits/limit_%s_%s.png' % (parity, wname),
 			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
 			bbox_inches='tight'
 		)
@@ -331,7 +336,7 @@ for parity in ['A', 'H']:
 		#	bbox_inches='tight'
 		#)
 		plt.savefig(
-			'limit_%s_M%s.png' % (parity, mass),
+			'limits/limit_%s_M%s.png' % (parity, mass),
 			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
 			bbox_inches='tight'
 		)
