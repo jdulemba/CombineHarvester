@@ -5,14 +5,16 @@ from ROOT import TFile
 
 import matplotlib
 import matplotlib.pyplot as plt
-#import uproot
-import pandas as pd
 import numpy as np
 from pdb import set_trace
 
 parser = ArgumentParser()
 parser.add_argument('submission_dir')
 args = parser.parse_args()
+
+baseoutdir = '%s/zscores' % args.submission_dir
+if not os.path.isdir(baseoutdir):
+	os.makedirs(baseoutdir)
 
 jdl = open('%s/condor.jdl' % args.submission_dir).read()
 blocks = jdl.split('\n\n')
@@ -56,10 +58,8 @@ for key, submit in block_map.iteritems():
 	observed_g = np.array( [entry.g for entry in limits if abs(entry.quantileExpected - -1.) < 0.0001 if entry.limit > 0.0 if entry.limit != 0.5] )
 
 	print rname
-	#set_trace()
 
         num_pt_comp = 3 # number of points on either side of point to be used for finding mean, stdev
-
 
                 ##### try my outlier removal
     	### deal with CLs close to 0.5
@@ -67,22 +67,24 @@ for key, submit in block_map.iteritems():
 	invalid_cls = []
 	invalid_inds = []
 
+	#if rname == '2018Nov08_April1_modInd_TEST/H_750_50_limits_gathered.root': set_trace()
 	lim0p5_idx = np.where( abs(observed_cls-0.5) < 0.05)[0] # indices where cls is close to 0.5
-	consec = [i for i, df in enumerate(np.diff(lim0p5_idx)) if df!= 1]
-	consec = np.hstack([-1, consec, len(lim0p5_idx)-1])
-	consec = np.vstack([consec[:-1]+1, consec[1:]]).T
-	consec = consec.astype(np.int64)
-	first_inds = lim0p5_idx[consec][:,0] # first indices of consecutive indices (could be standalone values)
-	last_inds = lim0p5_idx[consec][:,1] # first indices of consecutive indices (could be standalone values)
-	# large jump from previous CLs value
-	cls_jump = [abs(observed_cls[idx]-observed_cls[idx-1]) > 0.2 for idx in first_inds]
-	#set_trace() 
-	for j,k in enumerate(cls_jump):
-	    if k == True:
-	        for val in range(first_inds[j], last_inds[j]+1):
-	    	    invalid_cls.append( observed_cls[val] )
-	    	    invalid_g.append( observed_g[val] )
-	    	    invalid_inds.append( val )
+	if np.size(lim0p5_idx) > 0:
+		consec = [i for i, df in enumerate(np.diff(lim0p5_idx)) if df!= 1]
+		consec = np.hstack([-1, consec, len(lim0p5_idx)-1])
+		consec = np.vstack([consec[:-1]+1, consec[1:]]).T
+		consec = consec.astype(np.int64)
+		first_inds = lim0p5_idx[consec][:,0] # first indices of consecutive indices (could be standalone values)
+		last_inds = lim0p5_idx[consec][:,1] # first indices of consecutive indices (could be standalone values)
+		# large jump from previous CLs value
+		cls_jump = [abs(observed_cls[idx]-observed_cls[idx-1]) > 0.2 for idx in first_inds]
+		#set_trace() 
+		for j,k in enumerate(cls_jump):
+		    if k == True:
+		        for val in range(first_inds[j], last_inds[j]+1):
+		    	    invalid_cls.append( observed_cls[val] )
+		    	    invalid_g.append( observed_g[val] )
+		    	    invalid_inds.append( val )
 
 	if invalid_inds:
 	    print 'Points have been removed for being outliers close to CLs = 0.5'
@@ -101,75 +103,69 @@ for key, submit in block_map.iteritems():
                     bracket = observed_cls[:num_pt_comp+1]
                     excluded = bracket[bracket != bracket[i]] # remove value corresponding to current index
                     mean, std = excluded.mean(), excluded.std(ddof=1) #uses unbiased estimator for stdev
-                    z_scores[i] = np.nan if abs((bracket[i] - mean)/std) == np.inf else abs((bracket[i] - mean)/std)
+                    z_scores[i] = np.nan if std == 0.0 else abs((bracket[i] - mean)/std)
 
             elif i >= len(observed_cls) - num_pt_comp: # indices on upper edge of values
                     bracket = observed_cls[-num_pt_comp-1:]
                     excluded = bracket[bracket != bracket[(i+num_pt_comp)-len(observed_cls)]] # remove value corresponding to current index
                     mean, std = excluded.mean(), excluded.std(ddof=1) #uses unbiased estimator for stdev
-                    z_scores[i] = np.nan if abs((bracket[(i+num_pt_comp)-len(observed_cls)] - mean)/std) == np.inf else abs((bracket[(i+num_pt_comp)-len(observed_cls)] - mean)/std)
-                    #set_trace()
+                    z_scores[i] = np.nan if std == 0.0 else abs((bracket[(i+num_pt_comp)-len(observed_cls)] - mean)/std)
 
             else: # indices in middle 
                     bracket = observed_cls[i-num_pt_comp:i+num_pt_comp+1]
                     excluded = np.concatenate((bracket[:num_pt_comp], bracket[-num_pt_comp:]))
                     mean, std = excluded.mean(), excluded.std(ddof=1) #uses unbiased estimator for stdev
-                    z_scores[i] = np.nan if abs((bracket[num_pt_comp] - mean)/std) == np.inf else abs((bracket[num_pt_comp] - mean)/std)
-                    #if i > 179: set_trace()
+                    z_scores[i] = np.nan if std == 0.0 else abs((bracket[num_pt_comp] - mean)/std)
 
             if z_scores[i] > 2.0:
-                print 'Limit value marked as outlier by z-score, continue, g = ', observed_g[i]
+                print '    Limit value marked as outlier by z-score, continue, g = ', observed_g[i]
 		#set_trace()
 
-	#set_trace()
 	  ## find outlier indices
-	outliers_inds = np.where(z_scores > 2.0)
+	outliers_inds = np.where(np.array( [z > 2.0 if ~np.isnan(z) else False for z in z_scores] ))[0]
 	outliers_cls = observed_cls[ outliers_inds ]
 	outliers_g = observed_g[ outliers_inds ]
 	outliers_z = z_scores[ outliers_inds ]
 
-	#set_trace()
 	  ## find valid and non-outlier indices from observed
-	usable_inds = [x for x in range(len(observed_cls)) if x not in outliers_inds[0]]
+	usable_inds = np.array([x for x in range(len(observed_cls)) if x not in outliers_inds])
 	usable_cls = observed_cls[ usable_inds ]
 	usable_g = observed_g[ usable_inds ]
 	usable_z = z_scores[ usable_inds ]
-	    #if i == 0: continue
 
 	#set_trace()
 
 	fig = plt.figure(figsize=[10,10])
-	fig.suptitle('%s M(%s) %s Limits and z-scores' % (parity, mass, width))
+	fig.suptitle('%s M(%s) %s Limits and z-scores' % (parity, mass, width), fontsize=20)
 	### plot limits
 	plt.subplot(211)
 	plt.scatter(expected_g, expected_cls, color='black', label='Expected')
 	plt.scatter(usable_g, usable_cls, color='green', label='Observed')
-	if invalid_inds:
-	    #set_trace()
+	if len(invalid_inds) > 0:
 	    plt.scatter(invalid_g, invalid_cls, color='blue', label='Invalid Points')
-	if outliers_inds:
-	    #set_trace()
+	if len(outliers_inds) > 0:
 	    plt.scatter(outliers_g, outliers_cls, color='red', label='Outliers')
 	plt.grid(which='both')
-	plt.xlim(0.0, round(observed_g.max()+0.1,2))
+	plt.xlim(-0.05, round(observed_g.max()+0.1,2))
 	plt.ylim(0.001, 1.2)
 	plt.gca().set_yscale('log')
 	plt.ylabel('limit')
-	plt.legend(loc='lower left',fontsize=8, numpoints=1)
+	plt.legend(loc='lower left',fontsize=8, numpoints=1, scatterpoints=1)
 	### plot z-scores
 	plt.subplot(212)
 	plt.scatter(usable_g, usable_z, color='green', label='Observed')
-	if outliers_inds:
-	    #set_trace()
+	if len(outliers_inds) > 0:
 	    plt.scatter(outliers_g, outliers_z, color='red', label='Outliers')
 	plt.grid(which='both')
-	plt.xlim(0.0, round(observed_g.max()+0.1,2))
+	plt.xlim(-0.05, round(observed_g.max()+0.1,2))
 	plt.ylim(0.001, z_scores[ z_scores > 0. ].max()+1)
 	plt.gca().set_yscale('log')
 	plt.xlabel('g')
 	plt.ylabel('z-score')
-	plt.legend(loc='lower left',fontsize=8, numpoints=1)
-	plt.tight_layout()
-	plt.savefig('%s/%s_M%s_%s_limits_and_zscores.png' % (args.submission_dir, parity, mass, width))
-	print '%s/%s_M%s_%s_limits_and_zscores.png    created' % (args.submission_dir, parity, mass, width)	
+	plt.legend(loc='lower left',fontsize=8, numpoints=1, scatterpoints=1)
+	fig.tight_layout(rect=[0, 0.03, 1, 0.95])
+	figname = '%s/%s_M%s_%s_limits_and_zscores.png' % (baseoutdir, parity, mass, width)
+	plt.savefig(figname)
+	plt.close(fig)
+	print '%s    created\n' % figname	
 	#set_trace()
