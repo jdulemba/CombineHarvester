@@ -23,11 +23,13 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 
 3. Making plots:
 
-   From within the 'jobid' directory, execute
+   a) To make limits plots:
+	From within the 'jobid' directory, execute
+	
+	python ../scripts/model_independent_limits_ext.py summary.npy
 
-   python ../scripts/model_independent_limits_ext.py summary.npy
-
-   which will create png files with the limits
+   b) To make z-score plots:
+	python scripts/htt_limit_outlier_plotter.py 'outdir'
 '''
 
 
