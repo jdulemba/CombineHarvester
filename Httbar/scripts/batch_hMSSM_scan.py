@@ -10,6 +10,7 @@ parser.add_argument('jobid')
 parser.add_argument('input_sushi')
 parser.add_argument('outdir')
 parser.add_argument('--noblind', action='store_true')
+parser.add_argument('--channels', default='', help='leptonic decay type')
 args = parser.parse_args()
 
 if not os.path.isdir(args.outdir):
@@ -33,7 +34,7 @@ executable = %s
 Output = con_{idx}.stdout
 Error = con_{idx}.stderr
 Log = con_{idx}.log
-Arguments = {jobid} {ma} {tanb} {sushi} {blind} --runScan --twoPars --barlowBeeston
+Arguments = {jobid} {ma} {tanb} {sushi} {blind} --runScan --twoPars --barlowBeeston {channels}
 Queue
 '''.format(
 				idx=idx,
@@ -41,5 +42,6 @@ Queue
 				ma=int(ma),
 				tanb=round(tanb, 2),
 				sushi=os.path.realpath(args.input_sushi),
-				blind= '--noblind' if args.noblind else ''
+				blind= '--noblind' if args.noblind else '',
+				channels="--channels={}".format(args.channels) if args.channels else '',
 				))
