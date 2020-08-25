@@ -36,16 +36,21 @@ args = parser.parse_args()
 
 val2name = lambda x: str(x).replace('.','p').replace('p0','')
 
-syscall('make_point.sh {} {} TESTME {}:{}:{}:1. ""'.format(
-		args.jobid, args.kfactor, args.parity, args.mass, args.width
+#set_trace()
+syscall('{}/scripts/make_point.sh {} {} TESTME {}:{}:{}:1. ""'.format(
+		os.environ['PROJECT_DIR'], args.jobid, args.kfactor, args.parity, args.mass, args.width
 		))
+
+#set_trace()
 syscall(
 	'hadd -f templates_ALL_POINT.root TESTME.root '
-	'%s/src/CombineHarvester/Httbar/data/templates_l?_bkg_%s.root' % (
+    '%s/src/CombineHarvester/Httbar/data/templates_l?_4PJets_bkg_%s.root' % (
+	#'%s/src/CombineHarvester/Httbar/data/templates_l?_bkg_%s.root' % (
 		os.environ['CMSSW_BASE'],
 		args.jobid
 		))
 
+#set_trace()
 if args.extern:
 	syscall('externalize.py templates_ALL_POINT.root %s' % args.extern)
 
@@ -59,22 +64,31 @@ if args.ignore:
 	opts += "--ignore='%s' " % args.ignore
 if args.barlowBeeston:
 	opts += "--noBBB "
+
+set_trace()
+
 syscall((
-		'setup_common.py POINT --parity={} --indir=./ --limitdir=./'
+		'{}/scripts/setup_common.py POINT --parity={} --indir=./ --limitdir=./'
 		' --masses="{}" --widths="{}" {}').format(
-		args.parity, args.mass, val2name(args.width),
+		os.environ['PROJECT_DIR'], args.parity, args.mass, val2name(args.width),
 		opts
 		))
 
 interference = '.CombineTools.InterferencePlusFixed:interferencePlusFixed' if args.twoPars else '.CombineTools.InterferenceModel:interferenceModel'
 
 syscall((
-		'combineTool.py -M T2W -i {}_{}/* -o workspace.root -P CombineHarvester'
+		#'combineTool.py -M T2W -i {}_{}/* -o workspace.root -P CombineHarvester'
+		#'{}').format(
+		#args.parity, val2name(args.width), interference
+		'{}/bin/{}/combineTool.py -M T2W -i {}_{}/* -o workspace.root -P CombineHarvester'
 		'{}').format(
-		args.parity, val2name(args.width), interference
+		os.environ['CMSSW_BASE'], os.environ['SCRAM_ARCH'], args.parity, val2name(args.width), interference
 		))
 
 print '\n\nRunning LIMIT\n\n'
+
+#set_trace()
+
 if not args.runScan:
 	syscall((
 			'combineTool.py -M AsymptoticLimits -d {}/{}/workspace.root --there'
@@ -111,7 +125,8 @@ else:
 				'combineTool.py -M AsymptoticLimits -d {}/{}/workspace.root --there'
 				' -n .limitscan.POINT.{} --setParameters g={} --freezeParameters g '
 				' --rMin=0 --rMax=2.4 --rRelAcc 0.001 --picky --singlePoint 1. --cminPreScan {} {}').format('_'.join([args.parity, val2name(args.width)]), args.mass, point, point,
-				'' if args.noblind else '--run blind -t -1',
+				#'' if args.noblind else '--run blind -t -1',
+				'' if args.noblind else '-t -1',
 				'--X-rtd MINIMIZER_analytic' if args.barlowBeeston else ''
 				))
 			syscall((

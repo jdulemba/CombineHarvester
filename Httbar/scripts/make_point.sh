@@ -19,13 +19,14 @@ torm=""
 toadd=''
 for setting in $settings1 $settings2; do
 		IFS=':' read -r -a options <<< "$setting"
-		for chan in 'll' 'lj'; do
+		for chan in 'lj'; do
+		#for chan in 'll' 'lj'; do
 				wmorph=temp_$chan'_widthmorph'.$setting.root
-				morph_widths.py $CMSSW_BASE/src/CombineHarvester/Httbar/data/templates_$chan'_sig_'$jobid.root --single="${options[2]}" \
-						--filter='gg'"${options[0]}"'*'	--nocopy --out $wmorph --kfactors=$kfactorfile
+                $PROJECT_DIR/scripts/morph_widths.py $CMSSW_BASE/src/CombineHarvester/Httbar/data/templates_$chan'_4PJets_sig_'$jobid.root --single="${options[2]}" \
+                        --filter='gg'"${options[0]}"'*' --nocopy --out $wmorph --kfactors=$kfactorfile
 				mmorph=temp_$chan'_massmorph'.$setting.root
-				morph_mass.py $wmorph $CMSSW_BASE/src/CombineHarvester/Httbar/data/templates_$chan'_bkg_'$jobid.root \
-						"${options[0]}" --algo NonLinearPosFractions --single "${options[1]}" --kfactor ${options[3]} --out $mmorph -q
+                $PROJECT_DIR/scripts/morph_mass.py $wmorph $CMSSW_BASE/src/CombineHarvester/Httbar/data/templates_$chan'_4PJets_bkg_'$jobid.root \
+                        "${options[0]}" --algo NonLinearPosFractions --single "${options[1]}" --kfactor ${options[3]} --out $mmorph -q
 				toadd=$toadd' '$mmorph
 				torm=$wmorph' '$torm
 		done

@@ -7,7 +7,7 @@ from distutils import spawn
 from numpy import arange
 
 parser = ArgumentParser()
-parser.add_argument('jobid')
+#parser.add_argument('jobid')
 parser.add_argument('outdir')
 parser.add_argument('parities')
 parser.add_argument('masses')
@@ -40,7 +40,8 @@ executable = %s
 +MaxRuntime = 21600
 %s
 
-''' % (spawn.find_executable('single_point_limit.py'), osreqs) )
+''' % ('%s/scripts/single_point_limit.py' % os.environ['PROJECT_DIR'], osreqs) )
+#''' % (spawn.find_executable('single_point_limit.py'), osreqs) )
 	idx = 0
 	for parity in args.parities.split(','):
 		for mass in masses:
@@ -53,7 +54,8 @@ Arguments = {jobid} {parity} {mass} {width} {blind} {keep} {kfactor} {scan} {two
 Queue
 '''.format(
 				idx=idx,
-				jobid=args.jobid,
+				jobid=os.environ['jobid'],
+				#jobid=args.jobid,
 				parity=parity,
 				mass=mass,
 				width=width,

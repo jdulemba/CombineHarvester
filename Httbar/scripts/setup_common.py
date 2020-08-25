@@ -26,7 +26,7 @@ common_theory_uncs = [
 	LnNUnc(['VV'], 'CMS_httbar_VVNorm_13TeV', 1.5),
 	LnNUnc(['TT'], 'TTXsec', 1.06), #FIXME?
 	LnNUnc(['tWChannel'], 'CMS_httbar_tWChannelNorm_13TeV', 1.15),
-	# LnNUnc(['ZJets'], 'CMS_httbar_ZNorm_13TeV', 1.5), #Removed here - decorrelated for l+j and dilepton
+	## LnNUnc(['ZJets'], 'CMS_httbar_ZNorm_13TeV', 1.5), #Removed here - decorrelated for l+j and dilepton
 	LnNUnc(['TTV'], 'CMS_httbar_TTVNorm_13TeV', 1.3),
 ]
 
@@ -36,7 +36,7 @@ ll_theory_uncs = [
 
 lj_theory_uncs = [
 	LnNUnc(['tChannel'], 'CMS_httbar_tChannelNorm_13TeV', 1.20),
-	LnNUnc(['sChannel'], 'CMS_httbar_sChannelNorm_13TeV', 1.20),
+	#LnNUnc(['sChannel'], 'CMS_httbar_sChannelNorm_13TeV', 1.20),
 	LnNUnc(['QCDmujets'], 'CMS_httbar_QCDmujetsNorm', 2.0),
 	LnNUnc(['QCDejets'], 'CMS_httbar_QCDejetsNorm', 2.0),
 	LnNUnc(['WJets'], 'CMS_httbar_WNorm_13TeV', 1.5),
@@ -53,8 +53,10 @@ common_shape_uncs = [
 	'CMS_fake_b_13TeV', 
 ]
 lj_by_lepton_uncs = {
-	'mu' : ['CMS_eff_trigger_m', 'CMS_eff_m'],
-	'el' : ['CMS_eff_trigger_e', 'CMS_eff_e']
+	#'mu' : ['CMS_eff_trigger_m', 'CMS_eff_m'],
+	#'el' : ['CMS_eff_trigger_e', 'CMS_eff_e']
+	'mu' : ['CMS_eff_m'],
+	'el' : ['CMS_eff_e']
 }
 lj_shape_uncs = []
 ll_shape_uncs = ['CMS_eff_trigger_l', 'CMS_eff_e', 'CMS_eff_m']
@@ -62,30 +64,39 @@ ll_shape_uncs = ['CMS_eff_trigger_l', 'CMS_eff_e', 'CMS_eff_m']
 #tt shapes
 common_tt_shape_uncs = [
 	# Theory
-	'CMS_httbar_PDF_alphaS', 'CMS_httbar_PDF_1', 'CMS_httbar_PDF_2', 
-	'QCDscaleFSR_TT', 'Hdamp_TT', 
-	'TMass', 'QCDscaleMERenorm_TT', 'QCDscaleMEFactor_TT',
-	'CMS_TopPt1_TT', 'CMS_TopPt2_TT',
+        'Hdamp_TT', 'TMass', 'QCDscaleMERenormFactor_TT',
+        'QCDscaleMERenorm_TT', 'QCDscaleMEFactor_TT',
+
+		##
+	#'CMS_httbar_PDF_alphaS', 'CMS_httbar_PDF_1', 'CMS_httbar_PDF_2', 
+	#'QCDscaleFSR_TT', 'Hdamp_TT', 
+	#'TMass', 'QCDscaleMERenorm_TT', 'QCDscaleMEFactor_TT',
+	#'CMS_TopPt1_TT', 'CMS_TopPt2_TT',
+		##
 	#JES
-	'CMS_scale_j_13TeV_AbsoluteStat',
-	'CMS_scale_j_13TeV_AbsoluteScale',
-	'CMS_scale_j_13TeV_AbsoluteMPFBias',
-	'CMS_scale_j_13TeV_Fragmentation',
-	'CMS_scale_j_13TeV_SinglePionECAL',
-	'CMS_scale_j_13TeV_SinglePionHCAL',
-	'CMS_scale_j_13TeV_FlavorQCD',
-	'CMS_scale_j_13TeV_TimePtEta',
-	'CMS_scale_j_13TeV_RelativeJEREC1',
-	'CMS_scale_j_13TeV_RelativePtBB',
-	'CMS_scale_j_13TeV_RelativePtEC1',
-	'CMS_scale_j_13TeV_RelativeBal',
-	'CMS_scale_j_13TeV_RelativeFSR',
-	'CMS_scale_j_13TeV_RelativeStatFSR',
-	'CMS_scale_j_13TeV_RelativeStatEC',
-	'CMS_scale_j_13TeV_PileUpDataMC',
-	'CMS_scale_j_13TeV_PileUpPtRef',
-	'CMS_scale_j_13TeV_PileUpPtBB',
-	'CMS_scale_j_13TeV_PileUpPtEC1',
+	'CMS_scale_j_13TeV',
+		##
+	#'CMS_scale_j_13TeV_AbsoluteStat',
+	#'CMS_scale_j_13TeV_AbsoluteScale',
+	#'CMS_scale_j_13TeV_AbsoluteMPFBias',
+	#'CMS_scale_j_13TeV_Fragmentation',
+	#'CMS_scale_j_13TeV_SinglePionECAL',
+	#'CMS_scale_j_13TeV_SinglePionHCAL',
+	#'CMS_scale_j_13TeV_FlavorQCD',
+	#'CMS_scale_j_13TeV_TimePtEta',
+	#'CMS_scale_j_13TeV_RelativeJEREC1',
+	#'CMS_scale_j_13TeV_RelativePtBB',
+	#'CMS_scale_j_13TeV_RelativePtEC1',
+	#'CMS_scale_j_13TeV_RelativeBal',
+	#'CMS_scale_j_13TeV_RelativeFSR',
+	#'CMS_scale_j_13TeV_RelativeStatFSR',
+	#'CMS_scale_j_13TeV_RelativeStatEC',
+	#'CMS_scale_j_13TeV_PileUpDataMC',
+	#'CMS_scale_j_13TeV_PileUpPtRef',
+	#'CMS_scale_j_13TeV_PileUpPtBB',
+	#'CMS_scale_j_13TeV_PileUpPtEC1',
+		##
+
 	#JER
 	'CMS_res_j_13TeV',
 	#MET
@@ -98,15 +109,15 @@ lj_shape_uncertainties_tt = [] #missing top pt! #should also LJ remove it?
 
 #signal shape uncertainties
 signal_shape_uncertainties = [
-	'QCDscaleMERenorm_ggA-int',
-	'QCDscaleMEFactor_ggA-int',
-	'QCDscaleMERenorm_ggA-sgn',
-	'QCDscaleMEFactor_ggA-sgn',
-	
-	'QCDscaleMERenorm_ggH-int',
-	'QCDscaleMEFactor_ggH-int',
-	'QCDscaleMERenorm_ggH-sgn',
-	'QCDscaleMEFactor_ggH-sgn',
+	#'QCDscaleMERenorm_ggA-int',
+	#'QCDscaleMEFactor_ggA-int',
+	#'QCDscaleMERenorm_ggA-sgn',
+	#'QCDscaleMEFactor_ggA-sgn',
+	#
+	#'QCDscaleMERenorm_ggH-int',
+	#'QCDscaleMEFactor_ggH-int',
+	#'QCDscaleMERenorm_ggH-sgn',
+	#'QCDscaleMEFactor_ggH-sgn',
 ]
 
 #Bin by bin template
@@ -114,10 +125,12 @@ ll_bbb_template = 'TT_CMS_httbar_%s_MCstatBin'
 lj_bbb_template = 'TT_CMS_httbar_%s_MCstatBin'
 
 def createProcessNames(widths=['5', '10', '25', '50'], modes=['A'], chan='cmb', masses=None):
-	patterns = ['gg{mode}_pos-sgn-{width}pc-M{mass}', 'gg{mode}_pos-int-{width}pc-M{mass}',  'gg{mode}_neg-int-{width}pc-M{mass}']
+	#patterns = ['gg{mode}_pos-sgn-{width}pc-M{mass}', 'gg{mode}_pos-int-{width}pc-M{mass}',  'gg{mode}_neg-int-{width}pc-M{mass}']
+	patterns = ['gg{mode}_pos-sgn-{width}pc-M{mass}', 'gg{mode}_neg-int-{width}pc-M{mass}']
 
 	procs = {
-        'bkg': ['WJets', 'tWChannel', 'tChannel', 'sChannel', 'VV', 'ZJets', 'TT', 'TTV'],
+        #'bkg': ['WJets', 'tWChannel', 'tChannel', 'sChannel', 'VV', 'ZJets', 'TT', 'TTV'],
+        'bkg': ['WJets', 'tWChannel', 'tChannel', 'VV', 'ZJets', 'TT', 'TTV'],
 		# 'bkg_mu':['QCDmujets'], # Ignore QCD for now because of extreme bbb uncertainties
 		'bkg_mu':['QCDmujets'],
 		'bkg_e':['QCDejets']
