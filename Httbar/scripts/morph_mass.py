@@ -443,7 +443,6 @@ for channel in channels:
 
             if args.kfactor != 1:
                 if pattern in ['pos-int', 'neg-int']:
-                    print 'INFO: Using interference k factor of', math.sqrt(args.kfactor*TT_KFACTOR)
                     h_out.Scale(math.sqrt(args.kfactor*TT_KFACTOR))
                 else:
                     print 'INFO: Using signal k factor of', args.kfactor

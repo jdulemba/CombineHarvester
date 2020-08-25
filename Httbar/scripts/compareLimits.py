@@ -9,7 +9,6 @@ parser.add_argument('-y', default='', help='y label')
 parser.add_argument('-t', default='', help='title')
 parser.add_argument('-o', default='out.png', help='output')
 parser.add_argument('--autolabels', action='store_true', help='output')
-parser.add_argument('--same_points', action='store_true', help='output')
 parser.add_argument(
 	'--use', choices=["exp+1", "exp+2", "exp-1", "exp-2", "exp0", 'obs'], 
 	default='exp0', help='to use')
@@ -21,12 +20,9 @@ import uuid
 import os
 from pdb import set_trace
 
-def json2graph(jfile, topick, masses=None):
+def json2graph(jfile, topick):
 	jinfo = json.loads(open(jfile).read())
-	if masses:
-		points = [(float(i), j[topick]) for i, j in jinfo.iteritems() if i in masses]
-	else:
-		points = [(float(i), j[topick]) for i, j in jinfo.iteritems()]
+	points = [(float(i), j[topick]) for i, j in jinfo.iteritems()]
 	points.sort()
 	gr = TGraph(len(points))
 	for i, xy in enumerate(points):
@@ -44,15 +40,6 @@ colors = [1, 2, 4, 8, 28, 46, 14, 41, 9]#[2,4,6,8,28,46,14,31,1]
 if len(colors) < len(args.jsons):
 	raise RuntimeError('I have more limits than colors to display them!')
 
-common_masses = None
-if args.same_points:
-	for jfile in args.jsons:
-		keys = set(json.load(open(jfile)).keys())
-		if common_masses:
-			common_masses = common_masses.intersection(keys)
-		else:
-			common_masses = keys
-
 first=True
 for jfilelabel, color in zip(args.jsons, colors):
 	if not args.autolabels:
@@ -65,7 +52,7 @@ for jfilelabel, color in zip(args.jsons, colors):
 		else:
 			label = split[1]
 			
-	graph, m, M = json2graph(jfile, args.use, common_masses)
+	graph, m, M = json2graph(jfile, args.use)
 	ms.append(m)
 	Ms.append(M)
 	graph.SetMarkerColor(color)

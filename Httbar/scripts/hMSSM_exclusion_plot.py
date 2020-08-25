@@ -12,8 +12,6 @@ from copy import deepcopy
 
 parser = ArgumentParser()
 parser.add_argument('input')
-parser.add_argument('--supplementary', action='store_true', default=False)
-parser.add_argument('--preliminary', action='store_true', default=False)
 args = parser.parse_args()
 
 with open(args.input) as pkl:
@@ -23,8 +21,6 @@ import ROOT
 ROOT.gROOT.SetStyle('Plain')
 ROOT.gStyle.SetOptTitle(0)
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
-
-supplementary = args.supplementary
 
 excluded = {
 	"exp+1": [],
@@ -99,7 +95,7 @@ for excl_type in excluded:
 		)
 	g_excluded.GetXaxis().SetLimits(x_min, x_max)
 	y_min = mapping['tanb'].min()
-	y_max = mapping['tanb'].max() #*1.2
+	y_max = mapping['tanb'].max()*1.2
 	g_excluded.GetYaxis().SetRangeUser(y_min, y_max)
 	g_excluded.GetXaxis().SetTitle('m(A)')
 	g_excluded.GetYaxis().SetTitle('tan #beta')
@@ -178,42 +174,38 @@ fig = plt.figure(figsize=(10, 10), dpi= 80, facecolor='w', edgecolor='k')
 ax = fig.add_subplot(111)
 handles = []
 
-# obs_color = (103./255., 203./255., 123./255., 0.4)
-obs_color = (135./255., 206./255., 250./255., 0.5)
+obs_color = (103./255., 203./255., 123./255., 0.4)
 #version bug, the opacity is not handled in mpatches, therefore we make it lighter
 alpha = obs_color[3]
 patch_color = [i*alpha+1.*(1-alpha) for i in obs_color]
 patch_color[3] = 1.
+handles.append(
+    (mpatches.Patch(facecolor=tuple(patch_color), edgecolor='k'), r'Observed')
+    )
 
-canter = plt.plot(x(best_points['exp0']), y(best_points['exp0']), 'k-')
-
+canter = plt.plot(x(best_points['exp0']), y(best_points['exp0']), 'k--')
+handles.append(
+    (mlines.Line2D([], [], color='k', linestyle='--', linewidth=3), 'Expected')
+    )
 onescol = '#aeaeae'
 twoscol = '#c7c7c7'
 twosig = plt.fill_between(xs, y(best_points['exp+2']), y(best_points['exp-2']), color=twoscol)
 onesig = plt.fill_between(xs, y(best_points['exp+1']), y(best_points['exp-1']), color=onescol)
-
 handles.append(
-    (mpatches.Patch(color=twoscol), r'95\% expected')
+    (mpatches.Patch(color=onescol), r'$\mathsf{\pm}$1 s.d.\,expected')
     )
 handles.append(
-    (mpatches.Patch(color=onescol), r'68\% expected')
+    (mpatches.Patch(color=twoscol), r'$\mathsf{\pm}$2 s.d.\,expected')
     )
-handles.append(
-    (mpatches.Patch(facecolor=tuple(patch_color), edgecolor=None), r'Observed')
-    )
-handles.append(
-    (mlines.Line2D([], [], color='k', linestyle='-', linewidth=3), 'Expected')
-    )
-
 
 #Fake observed, just to check it works
 plt.fill_between(
 	xs, [0]*len(xs), y(best_points['obs']), 
-	facecolor=obs_color, edgecolor=None, linewidth=1
+	facecolor=obs_color, edgecolor='k', linewidth=1
 )
 
 plt.xlabel(	
-	r'm$_{\mathrm{\mathsf{A}}}$\, [GeV]', fontsize=32, 
+	r'm$_{\mathrm{\mathsf{A}}}$\, (GeV)', fontsize=32, 
 	horizontalalignment='right', x=1.0, 
 )
 #by hand y label, in pyplot 1.4 it aligns properly, here not
@@ -223,7 +215,7 @@ plt.ylabel(
     y=0.94 #shifts the label down just right
 )
 plt.xlim((x_min, x_max)) 
-y_max += 1.
+y_max += 2.
 plt.ylim((y_min, y_max)) 
 ax.xaxis.set_major_formatter(
 	ticker.FormatStrFormatter("%d")
@@ -251,7 +243,7 @@ fontP.set_size(32)
 legend_x = 0.1
 plt.legend(
 	x(handles), y(handles),
-	bbox_to_anchor=(0.42, 0.93),#, .55, .102), 
+	bbox_to_anchor=(0.58, 0.93),#, .55, .102), 
 	loc=1,
 	ncol=2, mode="expand", borderaxespad=0.,
 	fontsize=29,
@@ -267,19 +259,10 @@ plt.legend(
 # \textit{Preliminary}''',
 #     fontsize=32
 #     )
-
-cms_label = r'''\textbf{CMS}'''
-if supplementary:
-	cms_label = r'''\textbf{CMS} \textit{Supplementary}'''
-if args.preliminary:
-	cms_label = r'''\textbf{CMS} \textit{Preliminary}'''
-
 plt.text(
 	x_min+(x_max-x_min)*0.01, y_max+0.025*delta_y,
-	cms_label,
-	fontsize=30 if supplementary or args.preliminary else 32
-	# r'''\textbf{CMS}''',
-	# fontsize=32
+	r'''\textbf{CMS} \textit{Preliminary}''',
+	fontsize=32
 	)
 #legend title (again, due to version)
 plt.text(
@@ -292,7 +275,7 @@ plt.text(
 txt = plt.text(
     x_max-(x_max-x_min)*0.01, y_max+0.025*delta_y,
     r'35.9 fb$^{\mathsf{-1}}$ (13 TeV)',
-    fontsize=30 if supplementary or args.preliminary else 32,
+    fontsize=32,
     horizontalalignment='right'
     )
 

@@ -25,7 +25,6 @@ parser.add_argument('input_sushi')
 parser.add_argument('--noblind', action='store_true')
 parser.add_argument('--keep', action='store_true')
 parser.add_argument('--force', help='force the values for debugging')
-parser.add_argument('--channels', default='', help='leptonic decay type')
 parser.add_argument('--runScan', action='store_true', help='run scan of AsymptoticLimits instead of limit only')
 parser.add_argument('--twoPars', action='store_true', help='add both regular signal strength and coupling modifier to model')
 parser.add_argument('--barlowBeeston', action='store_true', help='use Barlow-Beeston instead of separate MC statistical uncertainties')
@@ -95,16 +94,11 @@ with open(args.input_sushi) as sushi_pkl:
 			)
 		)
 	print '\n\ncreating workspace\n\n'
-	opts = ''
-	if args.barlowBeeston:
-		opts += '--noBBB '
-	if args.channels:
-		opts += "--channels={} ".format(args.channels)
 	syscall((
 			'setup_common.py POINT --indir=./ --limitdir=./'
 			' --masses="A:{},H:{}" --widths="A:{},H:{}" {}').format(
 			mA, mH, val2name(widthA), val2name(widthH), 
-			opts
+			'--noBBB' if args.barlowBeeston else ''
 			))
 	model = '.InterferencePlusFixed:interferencePlusFixed' if args.twoPars else '.InterferenceModel:interferenceModel'
 	dirname = '_'.join(['A', val2name(widthA), str(mA), 'H', val2name(widthH), str(mH)])

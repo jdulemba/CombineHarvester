@@ -16,7 +16,7 @@ ROOT.gStyle.SetMarkerSize(0.7)
 
 NAMECOUNTER = 0
 
-def read(scan, param, files, ycut, ymax=None, rval=None):
+def read(scan, param, files, ycut):
     goodfiles = [f for f in files if plot.TFileIsGood(f)]
     limit = plot.MakeTChain(goodfiles, 'limit')
     graph = plot.TGraphFromTree(limit, param, 'limit', 'quantileExpected == -1')
@@ -24,10 +24,6 @@ def read(scan, param, files, ycut, ymax=None, rval=None):
     graph.Sort()
     plot.RemoveGraphXDuplicates(graph)
     plot.RemoveGraphYAbove(graph, ycut)
-    if ymax is not None: # Can be zero
-        plot.RemoveGraphYBelow(graph, ymax)
-    if rval:
-        plot.RemoveGraphYAll(graph, 0.5)
     # graph.Print()
     return graph
 
@@ -36,8 +32,8 @@ def Eval(obj, x, params):
     return obj.Eval(x[0])
 
 
-def BuildScan(scan, param, files, color, yvals, ycut, ymax=None, rval=None):
-    graph = read(scan, param, files, ycut, ymax, rval)
+def BuildScan(scan, param, files, color, yvals, ycut):
+    graph = read(scan, param, files, ycut)
     bestfit = None
     for i in xrange(graph.GetN()):
         if graph.GetY()[i] == 0.:
@@ -133,7 +129,7 @@ if args.translate is not None:
 yvals = [0.05, 1.]
 
 
-main_scan = BuildScan(args.output, args.POI, [args.main], args.main_color, yvals, args.y_cut, 0.001, 0.5) # FIXME temp hack
+main_scan = BuildScan(args.output, args.POI, [args.main], args.main_color, yvals, args.y_cut)
 
 other_scans = [ ]
 other_scans_opts = [ ]

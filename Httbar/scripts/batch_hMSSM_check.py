@@ -96,13 +96,13 @@ import numpy as np
 for key, item in summary.items():
 	mA, tanb = key
 	if item:
-		vals_list.append(tuple([mA, tanb] + [i[0] if i else MAX_LIM for i in item[0]] + [i[0] if i else MAX_LIM for i in item[1]] + [i[1] if len(i) > 1 else (MAX_LIM if j else np.nan) for i, j in zip(item[0], item[1])]))
+		vals_list.append(tuple([mA, tanb] + [i[0] for i in item[0]] + [i[0] if i else MAX_LIM for i in item[1]] + [i[1] if len(i) > 1 else (MAX_LIM if j else np.nan) for i, j in zip(item[0], item[1])]))
 	else:
 		vals_list.append(tuple([mA, tanb] + [np.nan for _ in lims]*3))
 
 with open('%s/summary.npy' % args.submission_dir, 'wb') as out:
     arr = np.array(
         vals_list,
-        dtype=[('mA', 'i4'), ('tanb', 'f4')] + [(str(i), 'f4') for i in lims] + [(str(i)+'lower', 'f4') for i in lims] + [(str(i)+'upper', 'f4') for i in lims]
+        dtype = [('mA', 'i4'), ('tanb', 'f4')] + [(str(i), 'f4') for i in lims] + [(str(i)+'lower', 'f4') for i in lims] + [(str(i)+'upper', 'f4') for i in lims]
         )
     np.save(out, arr)

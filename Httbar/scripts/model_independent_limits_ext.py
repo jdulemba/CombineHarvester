@@ -1,7 +1,4 @@
 #! /bin/env python
-
-# pylint: disable=W0312,C0330
-
 import math
 from argparse import ArgumentParser
 from pdb import set_trace
@@ -19,8 +16,6 @@ plt.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 import matplotlib.ticker as ticker
-
-print 'Run with matplotlib > 2, e.g. by sourcing CMSSW_10_3_X'
 
 parser = ArgumentParser()
 parser.add_argument('input')
@@ -66,7 +61,7 @@ addenda = {
 	# 'mass' : r'\textbf{width}$\boldsymbol{_{\mathrm{\mathsf{%s}}} \mathsf{= %.1f}}$\textbf{\%% }',
 	'width': r'm$_{\mathrm{\mathsf{%s}}}$ = {%d}\,GeV',
 	# 'mass' : r'Width$_{\mathrm{\mathsf{%s}} \mathsf{= %.1f}}$\%%',
-	'mass' : r'$\Gamma_{\mathrm{\mathsf{%s}}}$/m$_{\mathrm{\mathsf{%s}}}$ = {%.1f}\%%',
+	'mass' : r'$\Gamma$/m$_{\mathrm{\mathsf{%s}}}$ = {%.1f}\%%',
 	}
 
 vartoadd = {
@@ -79,15 +74,11 @@ def make_plot(subset, xvar, maxg_values=None):
 		subset.sort(order=xvar)
 		print subset
 		print xvar
-
-		parity = list(set(subset['parity']))[0]
-		sxvar = subset[xvar]
-		x_min = sxvar.min()
-		x_max = sxvar.max()	
+		x_min = subset[xvar].min()
+		x_max = subset[xvar].max()	
 		y_min = min(subset['exp-2'].min(), subset['obs'].min())*0.8
-		y_max = max(subset['exp+2'].max(), subset['obs'].max())/0.68
-		y_max = min(y_max, 3./0.7)
-		y_leg_cutoff = min( y_min + (y_max - y_min) * 0.68, 3.) # reserve ~30% for legend
+		y_max = max(subset['exp+2'].max(), subset['obs'].max())/0.7
+		y_leg_cutoff = min(y_max * 0.74, 3.) # reserve ~30% for legend
 
 		# obs_color = (103./255., 203./255., 123./255., 0.4)
 		obs_color = (135./255., 206./255., 250./255., 0.5)
@@ -104,13 +95,13 @@ def make_plot(subset, xvar, maxg_values=None):
 		
 		# #FIXME: add observed
 		# observed = plt.plot(
-		# 	sxvar, np.random.normal(scale=0.15, size=len(subset['exp0']))+subset['exp0'], 
+		# 	subset[xvar], np.random.normal(scale=0.15, size=len(subset['exp0']))+subset['exp0'], 
 		# 	color='k', linestyle='-', markersize=10, marker='.'
 		# 	)
 
 
 		observed = plt.plot(
-			sxvar, subset['obs'], 
+			subset[xvar], subset['obs'], 
 			color='k', linestyle='None'#, markersize=10, marker='.'
 			)
 
@@ -119,11 +110,11 @@ def make_plot(subset, xvar, maxg_values=None):
 			# (mpatches.Patch(color=obs_color), mlines.Line2D([], [], color='k', linestyle='None', markersize=10, marker='.')), 'Observed')
 			)
 		
-		center = plt.plot(sxvar, subset['exp0'], color='blue', linestyle='-')
+		center = plt.plot(subset[xvar], subset['exp0'], color='blue', linestyle='-')
 		handles.append(
 			(mlines.Line2D([], [], color='blue', linestyle='-'), 'Expected')
 			)
-		twosig = plt.fill_between(sxvar, subset['exp-2'], subset['exp+2'], color=twosigma)
+		twosig = plt.fill_between(subset[xvar], subset['exp-2'], subset['exp+2'], color=twosigma)
 
 		if maxg_values is not None:
 			# handles.append((mpatches.Patch(
@@ -131,14 +122,14 @@ def make_plot(subset, xvar, maxg_values=None):
 			# 		lw=0.
 			# 	), r'$\Gamma_\mathrm{t\bar t} > \Gamma_\mathrm{tot}$'))
 			# handles.append((mpatches.Patch(color='none', hatch='||', edgecolor='gray', linewidth=1.), mlines.Line2D([], [], color='gray', linestyle='-')), r'$\Gamma_\mathrm{t\bar t} > \Gamma_\mathrm{tot}$'))
-			handles.append((mpatches.Patch(facecolor='none', hatch='||', edgecolor='gray', linewidth=1.), r'$\Gamma_\mathrm{\mathsf{%s}\rightarrow t\bar t} > \Gamma_\mathrm{\mathsf{%s}}$'%(parity, parity)))
+			handles.append((mpatches.Patch(facecolor='none', hatch='||', edgecolor='gray', linewidth=1.), r'$\Gamma_\mathrm{t\bar t} > \Gamma_\mathrm{tot}$'))
 
 		handles.append(
 			# (mpatches.Patch(color=twosigma), r'$\mathsf{\pm}$2\,s.d.\ expected')
 			# )
 			(mpatches.Patch(color=twosigma), r'95\% expected')
 			)
-		onesig = plt.fill_between(sxvar, subset['exp+1'], subset['exp-1'], color=onesigma)
+		onesig = plt.fill_between(subset[xvar], subset['exp+1'], subset['exp-1'], color=onesigma)
 		handles.append(
 			# (mpatches.Patch(color=onesigma), r'$\mathsf{\pm}$1\,s.d.\ expected')
 			# )
@@ -150,53 +141,42 @@ def make_plot(subset, xvar, maxg_values=None):
 		# alpha = obs_color[3]
 		# patch_color = [i*alpha+1.*(1-alpha) for i in obs_color]
 		# patch_color[3] = 1.
-		lower_contour =  np.array([val if val < y_leg_cutoff else y_leg_cutoff for val in subset['obslower']])
-		upper_contour =  np.array([val if val < y_leg_cutoff else y_leg_cutoff for val in subset['obsupper']])
-
-		observed_contour = plt.fill_between(sxvar, subset['obs'], lower_contour, color=obs_color, linewidth=0)
-
-
-		observed_contour = plt.fill_between(sxvar, upper_contour, [y_leg_cutoff for n in xrange(len(subset['obsupper']))], color=obs_color, linewidth=0)
-		# observed_contour = plt.fill_between(sxvar, subset['obslower'], subset['obsupper'], color=obs_color)
+		#set_trace()
+		upper_contour =  np.array([val if val < 3. else y_leg_cutoff for val in subset['obslower']])
+		observed_contour = plt.fill_between(subset[xvar], subset['obs'], upper_contour, color=obs_color)
+		observed_contour = plt.fill_between(subset[xvar], subset['obsupper'], [y_leg_cutoff for n in xrange(len(subset['obsupper']))], color=obs_color)
+		# observed_contour = plt.fill_between(subset[xvar], subset['obslower'], subset['obsupper'], color=obs_color)
 		lower_to_draw =  np.array([val if val < 3. else np.nan for val in subset['obslower']])
-		# observed_lower = plt.plot(
-		# 	sxvar, lower_to_draw, 
-		# 	color='k', linestyle='None'#, markersize=10, marker='.'
-		# 	)
-		# observed_upper = plt.plot(
-		# 	sxvar, subset['obsupper'], 
-		# 	color='k', linestyle='None'#, markersize=10, marker='.'
-		# 	)
-
+		observed_lower = plt.plot(
+			subset[xvar], lower_to_draw, 
+			color='k', linestyle='None'#, markersize=10, marker='.'
+			)
+		observed_upper = plt.plot(
+			subset[xvar], subset['obsupper'], 
+			color='k', linestyle='None'#, markersize=10, marker='.'
+			)
+		
+		#set_trace()
 		legend_border = plt.plot([x_min, x_max], [y_leg_cutoff, y_leg_cutoff], color='k', linestyle='-', linewidth=2)
 
 		if maxg_values is not None:
 			# maxg_values_todraw = [val if val < y_leg_cutoff else y_leg_cutoff for val in maxg_values]
 			# unphys_region = ax.fill(
-			# 	list(sxvar) + [sxvar[-1], sxvar[0]],
+			# 	list(subset[xvar]) + [subset[xvar][-1], subset[xvar][0]],
 			# 	list(maxg_values_todraw)+[y_leg_cutoff, y_leg_cutoff],
 			# 	color='gray', alpha=0.2, lw=0, zorder=1.5
 			# 	)
 			maxg_xvalues_todraw = [val[0]for val in maxg_values if val[1] < y_leg_cutoff]
 			maxg_values_todraw = [val[1] for val in maxg_values  if val[1] < y_leg_cutoff]
 			unphys_region = plt.plot(maxg_xvalues_todraw, maxg_values_todraw, color='gray', linestyle='-')
-			matplotlib.rcParams['hatch.linewidth'] = 1.2
-			plt.fill_between(maxg_xvalues_todraw, maxg_values_todraw, [min(val+0.02*(y_max-y_min), y_leg_cutoff) for val in maxg_values_todraw], facecolor='none', hatch='||', edgecolor='gray', linewidth=0.)
-
-		debug_lines = False
-		if debug_lines and any(the_y < y_leg_cutoff for the_y in upper_contour):
-			for x_, y_min_, y_max_, width_ in zip(sxvar, subset['obs'], lower_contour, subset['width']):
-				if width_ < subset['width'][0]: continue
-				plt.plot([x_, x_], [y_min_, y_max_], color='k', linestyle='-', linewidth=2)
-			for x_, y_min_, y_max_, width_ in zip(sxvar, upper_contour, [y_leg_cutoff for _ in xrange(len(subset['obsupper']))], subset['width']):
-				if width_ < subset['width'][0]: continue
-				plt.plot([x_, x_], [y_min_, y_max_], color='k', linestyle='-', linewidth=2)
+			plt.fill_between(maxg_xvalues_todraw, maxg_values_todraw, [min(val+0.02*(y_max-y_min), y_leg_cutoff) for val in maxg_values_todraw], color='none', hatch='||', edgecolor='gray', linewidth=0.)
 
 		#Fake observed, just to check it works
 		## plt.fill_between(
 		## 	xs, [0]*len(xs), [8, 6, 5, 4.3, 3.5, 3, 2, 1.5], 
 		## 	facecolor=obs_color, edgecolor='k', linewidth=1
 		## )
+		parity = list(set(subset['parity']))[0]
 		plt.xlabel(	
 			xlabels[xvar] % parity, fontsize=32, 
 			horizontalalignment='right', x=1.0, 
@@ -241,9 +221,8 @@ def make_plot(subset, xvar, maxg_values=None):
 		other_var = list(set(subset[vartoadd[xvar]]))[0]
 		ret.append(
 			plt.text(
-			# x_min+(x_max-x_min)*0.50, y_max-delta_y*.27,
-			x_min+(x_max-x_min)*0.50, y_max-delta_y*.286,
-				addenda[xvar] % ((parity, other_var) if xvar == 'width' else (parity, parity, other_var) ),
+			x_min+(x_max-x_min)*0.50, y_max-delta_y*.27,
+				addenda[xvar] % (parity, other_var),
 				 # +r'\textbf{95\% CL Excluded}:',
 			fontsize=29,
 			horizontalalignment='left'
@@ -254,7 +233,6 @@ def make_plot(subset, xvar, maxg_values=None):
 		plt.text(
 			x_min+(x_max-x_min)*0.00, y_max+0.025*delta_y,
 			r'''\textbf{CMS} \textit{Preliminary}''',
-			# r'''\textbf{CMS}''',
 			fontsize=32
 			)
 		
@@ -283,6 +261,7 @@ widths = sorted(list(set(limits['width'])))
 onesigma = '#00f847'
 twosigma = '#fffc4d'
 line = '#ff1521'
+#set_trace()
 
 for parity in ['A', 'H']:
 	for width in widths:
@@ -294,28 +273,6 @@ for parity in ['A', 'H']:
 		if not subset.size:
 			print 'No subset', parity, width, 'continuing'
 
-		# if parity == 'A' and width in [7.5, 10., 15., 20., 25.]:
-		subset.sort(order='mass')
-		for subsubset in subset:
-			# Crazy hack, FIXME
-			# For values of width < 10, the observed upper limits rather coincide
-			# with the 2nd upper limits for higher masses, so we align them
-			# here explicitly
-			if (width == 7.5 and subsubset[1] <= 725):
-				subsubset[3+12] = np.nan
-				subsubset[3+6] = np.nan
-			if subsubset[3+6] < 3. and subsubset[3+12] < 3.:
-			# if (width == 10. and subsubset[1] ==735) or (width == 15. and subsubset[1] ==735) or (width == 20. and subsubset[1] ==725): # or (width == 15. and subsubset[1] <= 735) or (width == 15. and subsubset[1] <= 735) or (width == 20. and subsubset[1] <= 730) or (width == 25. and subsubset[1] <= 745):
-				subset = np.hstack([subset, subsubset])
-				# subsubset[3+12] = subsubset[3]
-				# subset[0][1] = subset[0][1]-0.0000001 # for sorting
-				subset[-1][2] = subset[0][2]-0.00001 # for sorting
-				subset[-1][3+6] = 3.
-				subset[-1][3+12] = 3.
-				break
-				# subsubset[3] = np.nan
-
-
 		# maxg_values = np.empty_like(masses, dtype=float)
 		
 		# for i in range(len(masses)):
@@ -324,14 +281,15 @@ for parity in ['A', 'H']:
 		maxg_values = [(mass, max_g(parity, mass, width/100.)) for mass in np.arange(min(masses), max(masses)+5., 5.)]
 
 
-		ensure_drawn = make_plot(subset, 'mass', maxg_values)
+		#set_trace()
+		ensure_drawn = make_plot(subset, 'mass',  maxg_values)
 	
 		wname = val2name(width)
-		plt.savefig(
-			'limit_%s_%s.pdf' % (parity, wname),
-			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
-			bbox_inches='tight'
-		)
+		#plt.savefig(
+		#	'limit_%s_%s.pdf' % (parity, wname),
+		#	bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
+		#	bbox_inches='tight'
+		#)
 		plt.savefig(
 			'limit_%s_%s.png' % (parity, wname),
 			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
@@ -346,9 +304,6 @@ for parity in ['A', 'H']:
 			]
 		if not subset.size:
 			print 'No subset', parity, mass, 'continuing'
-			continue
-		# if mass == 735 and parity=='H':
-		# 	set_trace()
 
 		if mass == 750:
 			for subsubset in subset:
@@ -360,14 +315,7 @@ for parity in ['A', 'H']:
 					subsubset[3+12] = subsubset[3]
 					subsubset[3+6] = np.nan
 					subsubset[3] = np.nan
-				if (width == 7.5 and subsubset[1] <= 725):
-					subsubset[3+12] = np.nan
-					subsubset[3+6] = np.nan
-		if mass == 725:
-			for subsubset in subset:
-				if subsubset[2] == 7.5:
-					subsubset[3+12] = np.nan
-					subsubset[3+6] = np.nan
+
 		# maxg_values = np.empty_like(widths)
 		
 		# for i in range(len(widths)):
@@ -376,11 +324,12 @@ for parity in ['A', 'H']:
 
 		ensure_drawn = make_plot(subset, 'width', maxg_values)
 	
-		plt.savefig(
-			'limit_%s_M%s.pdf' % (parity, mass),
-			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
-			bbox_inches='tight'
-		)
+		#if (parity, mass) == ('A', 750): set_trace()
+		#plt.savefig(
+		#	'limit_%s_M%s.pdf' % (parity, mass),
+		#	bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
+		#	bbox_inches='tight'
+		#)
 		plt.savefig(
 			'limit_%s_M%s.png' % (parity, mass),
 			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
@@ -501,3 +450,4 @@ for parity in ['A', 'H']:
 	# 		bbox_inches='tight'
 	# 	)
 	# 	plt.clf()
+

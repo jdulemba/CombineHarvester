@@ -29,17 +29,17 @@ if args.kfactors and args.kfactors not in ['None', 'none']:
 mapping = {
   '0p1pc' : .1,
   '1pc' : 1.0,
-  '2p5pc' : 2.5,
-  '5pc'   : 5.0,
-  '10pc'  : 10.,
-  '25pc'  : 25.,
-  '50pc'  : 50., 
-  }
+	'2p5pc' : 2.5,
+	'5pc'   : 5.0,
+	'10pc'  : 10.,
+	'25pc'  : 25.,
+	'50pc'  : 50., 
+	}
 
 checks = {
-	5.0 : '5pc' ,
-	10. : '10pc',
-	25. : '25pc',	
+	5.0 : 'checks_5pc' ,
+	10. : 'checks_10pc',
+	25. : 'checks_25pc',	
 }
 
 xsections = ROOT.TFile(os.path.expandvars(
@@ -59,7 +59,6 @@ for key in mapping.values():
  new_points.pop(key,None)
 if args.forchecks:
 	new_points = checks
-	tomove = []
 
 available = set(mapping.values())
 to_make = set(new_points.keys())
