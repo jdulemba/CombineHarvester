@@ -36,7 +36,7 @@ ll_theory_uncs = [
 
 lj_theory_uncs = [
 	LnNUnc(['tChannel'], 'CMS_httbar_tChannelNorm_13TeV', 1.20),
-	#LnNUnc(['sChannel'], 'CMS_httbar_sChannelNorm_13TeV', 1.20),
+	LnNUnc(['sChannel'], 'CMS_httbar_sChannelNorm_13TeV', 1.20),
 	LnNUnc(['QCDmujets'], 'CMS_httbar_QCDmujetsNorm', 2.0),
 	LnNUnc(['QCDejets'], 'CMS_httbar_QCDejetsNorm', 2.0),
 	LnNUnc(['WJets'], 'CMS_httbar_WNorm_13TeV', 1.5),
@@ -53,10 +53,12 @@ common_shape_uncs = [
 	'CMS_fake_b_13TeV', 
 ]
 lj_by_lepton_uncs = {
+	'mu' : ['CMS_eff_trigger_m', 'CMS_eff_reco_m'],
+	'el' : ['CMS_eff_trigger_e', 'CMS_eff_reco_e']
 	#'mu' : ['CMS_eff_trigger_m', 'CMS_eff_m'],
 	#'el' : ['CMS_eff_trigger_e', 'CMS_eff_e']
-	'mu' : ['CMS_eff_m'],
-	'el' : ['CMS_eff_e']
+	#'mu' : ['CMS_eff_m'],
+	#'el' : ['CMS_eff_e']
 }
 lj_shape_uncs = []
 ll_shape_uncs = ['CMS_eff_trigger_l', 'CMS_eff_e', 'CMS_eff_m']
@@ -124,13 +126,15 @@ signal_shape_uncertainties = [
 ll_bbb_template = 'TT_CMS_httbar_%s_MCstatBin'
 lj_bbb_template = 'TT_CMS_httbar_%s_MCstatBin'
 
-def createProcessNames(widths=['5', '10', '25', '50'], modes=['A'], chan='cmb', masses=None):
-	#patterns = ['gg{mode}_pos-sgn-{width}pc-M{mass}', 'gg{mode}_pos-int-{width}pc-M{mass}',  'gg{mode}_neg-int-{width}pc-M{mass}']
-	patterns = ['gg{mode}_pos-sgn-{width}pc-M{mass}', 'gg{mode}_neg-int-{width}pc-M{mass}']
+def createProcessNames(widths=['5', '10', '25'], modes=['A'], chan='cmb', masses=None):
+#def createProcessNames(widths=['5', '10', '25', '50'], modes=['A'], chan='cmb', masses=None):
+	patterns = ['gg{mode}_pos-sgn-{width}pc-M{mass}', 'gg{mode}_pos-int-{width}pc-M{mass}',  'gg{mode}_neg-int-{width}pc-M{mass}']
+	#patterns = ['gg{mode}_pos-sgn-{width}pc-M{mass}', 'gg{mode}_pos-int-{width}pc-M{mass}']
+	#patterns = ['gg{mode}_pos-sgn-{width}pc-M{mass}', 'gg{mode}_neg-int-{width}pc-M{mass}']
 
 	procs = {
-        #'bkg': ['WJets', 'tWChannel', 'tChannel', 'sChannel', 'VV', 'ZJets', 'TT', 'TTV'],
-        'bkg': ['WJets', 'tWChannel', 'tChannel', 'VV', 'ZJets', 'TT', 'TTV'],
+        'bkg': ['WJets', 'tWChannel', 'tChannel', 'sChannel', 'VV', 'ZJets', 'TT', 'TTV'],
+        #'bkg': ['WJets', 'tWChannel', 'tChannel', 'VV', 'ZJets', 'TT', 'TTV'],
 		# 'bkg_mu':['QCDmujets'], # Ignore QCD for now because of extreme bbb uncertainties
 		'bkg_mu':['QCDmujets'],
 		'bkg_e':['QCDejets']
