@@ -7,7 +7,6 @@ from distutils import spawn
 from numpy import arange
 
 parser = ArgumentParser()
-#parser.add_argument('jobid')
 parser.add_argument('outdir')
 parser.add_argument('parities')
 parser.add_argument('masses')
@@ -24,7 +23,8 @@ args = parser.parse_args()
 if not os.path.isdir(args.outdir):
 	os.makedirs(args.outdir)
 
-osreqs = 'requirements = (OpSysAndVer =?= "SLCern6")' if 'slc6' in os.environ['SCRAM_ARCH'] else ''
+    # set environment variables
+jobid = os.environ['jobid']
 
 do_not_remove = set(args.doNotRemove.split(',')) if args.doNotRemove else set()
 
@@ -38,10 +38,8 @@ WhenToTransferOutput = ON_EXIT
 getenv = True
 executable = %s
 +MaxRuntime = 21600
-%s
 
-''' % ('%s/scripts/single_point_limit.py' % os.environ['PROJECT_DIR'], osreqs) )
-#''' % (spawn.find_executable('single_point_limit.py'), osreqs) )
+''' % spawn.find_executable('single_point_limit.py') )
 	idx = 0
 	for parity in args.parities.split(','):
 		for mass in masses:
@@ -54,8 +52,7 @@ Arguments = {jobid} {parity} {mass} {width} {blind} {keep} {kfactor} {scan} {two
 Queue
 '''.format(
 				idx=idx,
-				jobid=os.environ['jobid'],
-				#jobid=args.jobid,
+				jobid=jobid,
 				parity=parity,
 				mass=mass,
 				width=width,

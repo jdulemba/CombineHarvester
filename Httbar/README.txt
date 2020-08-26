@@ -4,7 +4,7 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 1. Computing model independent limits:
    a) Create condor.jdl file
 
-	python scripts/batch_independent_scan.py {jobid} {outdir} 'A,H' '400:751:50' '2.5,5,10,25' --runScan --twoPars --barlowBeeston --channels=lj
+	python scripts/batch_independent_scan.py {outdir} 'A,H' '400:751:50' '2.5,5,10,25' --runScan --twoPars --barlowBeeston --channels=lj
 
 	where {jobid} is part of the template file after sig/bkg_
 
