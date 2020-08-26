@@ -36,21 +36,17 @@ args = parser.parse_args()
 
 val2name = lambda x: str(x).replace('.','p').replace('p0','')
 
-#set_trace()
-syscall('{}/scripts/make_point.sh {} {} TESTME {}:{}:{}:1. ""'.format(
-		os.environ['PROJECT_DIR'], args.jobid, args.kfactor, args.parity, args.mass, args.width
+syscall('make_point.sh {} {} TESTME {}:{}:{}:1. ""'.format(
+		args.jobid, args.kfactor, args.parity, args.mass, args.width
 		))
 
-#set_trace()
 syscall(
 	'hadd -f templates_ALL_POINT.root TESTME.root '
     '%s/src/CombineHarvester/Httbar/data/templates_l?_4PJets_bkg_%s.root' % (
-	#'%s/src/CombineHarvester/Httbar/data/templates_l?_bkg_%s.root' % (
 		os.environ['CMSSW_BASE'],
 		args.jobid
 		))
 
-#set_trace()
 if args.extern:
 	syscall('externalize.py templates_ALL_POINT.root %s' % args.extern)
 
@@ -65,24 +61,19 @@ if args.ignore:
 if args.barlowBeeston:
 	opts += "--noBBB "
 
-set_trace()
-
 syscall((
-		'{}/scripts/setup_common.py POINT --parity={} --indir=./ --limitdir=./'
+		'setup_common.py POINT --parity={} --indir=./ --limitdir=./'
 		' --masses="{}" --widths="{}" {}').format(
-		os.environ['PROJECT_DIR'], args.parity, args.mass, val2name(args.width),
+		args.parity, args.mass, val2name(args.width),
 		opts
 		))
 
 interference = '.CombineTools.InterferencePlusFixed:interferencePlusFixed' if args.twoPars else '.CombineTools.InterferenceModel:interferenceModel'
 
 syscall((
-		#'combineTool.py -M T2W -i {}_{}/* -o workspace.root -P CombineHarvester'
-		#'{}').format(
-		#args.parity, val2name(args.width), interference
-		'{}/bin/{}/combineTool.py -M T2W -i {}_{}/* -o workspace.root -P CombineHarvester'
+		'combineTool.py -M T2W -i {}_{}/* -o workspace.root -P CombineHarvester'
 		'{}').format(
-		os.environ['CMSSW_BASE'], os.environ['SCRAM_ARCH'], args.parity, val2name(args.width), interference
+		args.parity, val2name(args.width), interference
 		))
 
 print '\n\nRunning LIMIT\n\n'
