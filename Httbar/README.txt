@@ -4,14 +4,14 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 1. Computing model independent limits:
    a) Create condor.jdl file
 
-	python scripts/batch_independent_scan.py {outdir} 'A,H' '400:751:50' '2.5,5,10,25' --runScan --twoPars --barlowBeeston --channels=lj
+	python scripts/batch_independent_scan.py {outdir} 'A,H' '400:751:50' '2.5,5,10,25' {njets} --runScan --twoPars --barlowBeeston --channels=lj
 
 	where {jobid} is part of the template file after sig/bkg_
 
 	To test:
 	    From within {outdir}
 
-	    python /afs/cern.ch/user/j/jdulemba/Htt_4PJ_Limit/CMSSW_8_1_0/bin/slc6_amd64_gcc530/single_point_limit.py {arguments from con_0}
+        python /afs/cern.ch/work/j/jdulemba/Htt_Limit/CMSSW_8_1_0/bin/slc7_amd64_gcc530/single_point_limit.py {arguments from con_0}
 
 	Run all points:
 	    From within {outdir}
@@ -45,7 +45,7 @@ PRODUCING hMSSM LIMITS FOR H/A SEARCH
 1. Compute hMSSM limits:
    a) Create condor.jdl file
 
-	python scripts/batch_hMSSM_scan.py 'jobid' 'kfactor file' 'output dir' --channels=lj
+	python scripts/batch_hMSSM_scan.py 'kfactor file' 'output dir' {njets} --channels=lj
 
 	To test:
 	   python /afs/cern.ch/user/j/jdulemba/Htt_4PJ_Limit/CMSSW_8_1_0/bin/slc6_amd64_gcc530/produce_morph_files_tanb_mA.py 'Arguments from con_0'

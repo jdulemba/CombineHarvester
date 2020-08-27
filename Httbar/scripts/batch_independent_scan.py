@@ -13,6 +13,7 @@ parser.add_argument('outdir')
 parser.add_argument('parities')
 parser.add_argument('masses')
 parser.add_argument('widths')
+parser.add_argument('njets', choices=['3', '4+'], help='Specify which jet multiplicity to use.')
 parser.add_argument('--doNotRemove')
 parser.add_argument('--noblind', action='store_true')
 parser.add_argument('--nokfactors', action='store_true')
@@ -40,13 +41,13 @@ with open('%s/batch_job.sh' % args.outdir, 'w') as batch_job:
     batch_job.write("""#!/bin/bash
 
 export PATH={PYPATH}:$PATH
-echo  "which python"
-which python
-
-echo "python path"
-echo $PYTHONPATH
-
-echo "SCRAM_ARCH: " $SCRAM_ARCH
+#echo  "which python"
+#which python
+#
+#echo "python path"
+#echo $PYTHONPATH
+#
+#echo "SCRAM_ARCH: " $SCRAM_ARCH
 
 EXE="${{@}}"
 echo $EXE
@@ -73,7 +74,7 @@ executable = %s/%s/batch_job.sh
 Output = con_{idx}.out
 Error = con_{idx}.err
 Log = con_{idx}.log
-Arguments = {jobid} {parity} {mass} {width} {blind} {keep} {kfactor} {scan} {twoPars} {bb} {channels}
+Arguments = {jobid} {parity} {mass} {width} {njets} {blind} {keep} {kfactor} {scan} {twoPars} {bb} {channels}
 Queue
 """.format(
 				idx=idx,
@@ -81,6 +82,7 @@ Queue
 				parity=parity,
 				mass=mass,
 				width=width,
+				njets='3Jets' if args.njets == '3' else '4PJets',
 				blind='--noblind' if args.noblind else '',
 				keep='--keep' if ':'.join([parity, mass, width]) in do_not_remove else '',
 				kfactor='--kfactor None' if args.nokfactors else '',

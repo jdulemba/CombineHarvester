@@ -22,6 +22,7 @@ parser.add_argument('jobid')
 parser.add_argument('parity')
 parser.add_argument('mass', type=int)
 parser.add_argument('width', type=float)
+parser.add_argument('njets', choices=['3Jets', '4PJets'], help='Specify which jet multiplicity to use.')
 parser.add_argument('--noblind', action='store_true')
 parser.add_argument('--keep', action='store_true')
 parser.add_argument('--mergeLJ', action='store_true')
@@ -36,14 +37,15 @@ args = parser.parse_args()
 
 val2name = lambda x: str(x).replace('.','p').replace('p0','')
 
-syscall('make_point.sh {} {} TESTME {}:{}:{}:1. ""'.format(
-		args.jobid, args.kfactor, args.parity, args.mass, args.width
+syscall('make_point.sh {} {} {} TESTME {}:{}:{}:1. ""'.format(
+		args.jobid, args.kfactor, args.njets, args.parity, args.mass, args.width
 		))
 
 syscall(
 	'hadd -f templates_ALL_POINT.root TESTME.root '
-    '%s/src/CombineHarvester/Httbar/data/templates_l?_4PJets_bkg_%s.root' % (
+    '%s/src/CombineHarvester/Httbar/data/templates_l?_%s_bkg_%s.root' % (
 		os.environ['CMSSW_BASE'],
+        args.njets,
 		args.jobid
 		))
 
