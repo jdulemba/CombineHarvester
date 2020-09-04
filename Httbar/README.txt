@@ -4,7 +4,7 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 1. Computing model independent limits:
    a) Create condor.jdl file
 
-	python scripts/batch_independent_scan.py {outdir} 'A,H' '400:751:50' '2.5,5,10,25' {njets} --runScan --twoPars --barlowBeeston --channels=lj
+	python scripts/batch_independent_scan.py {outdir} 'A,H' '400:751:50' '0.5,1,2.5,5,10,25' {njets} --runScan --twoPars --barlowBeeston --channels=lj
 
 	where {jobid} is part of the template file after sig/bkg_
 
@@ -32,6 +32,7 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 	From within {outdir}, execute
 	
 	python ../scripts/model_independent_limits_ext.py summary.npy
+	python ../scripts/model_independent_limits_ext.py summary.npy --zoom_out
 
    b) To make z-score plots:
 	python scripts/htt_limit_outlier_plotter.py {outdir}
@@ -64,3 +65,19 @@ PRODUCING hMSSM LIMITS FOR H/A SEARCH
    python ../scripts/hMSSM_exclusion_plot.py summary.npy
 
    -- creates exclusion plots from summary files --
+''''
+
+
+''''
+CHECKING MASS/WIDTH INTERPOLATION
+
+python scripts/morph_checks.py {mass} --{channel} --{njets} --{boson}
+
+where
+{mass} can be 500 or 600
+{njets}= 3Jets or 4PJets
+{boson}=A, H, or all
+{channel}=ll, lj, or all
+''''
+
+
