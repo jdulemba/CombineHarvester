@@ -27,19 +27,19 @@ if args.kfactors and args.kfactors not in ['None', 'none']:
 	kfactors = json.loads(open(args.kfactors).read())
 
 mapping = {
-  '0p1pc' : .1,
-  '1pc' : 1.0,
-	'2p5pc' : 2.5,
-	'5pc'   : 5.0,
-	'10pc'  : 10.,
-	'25pc'  : 25.,
-	'50pc'  : 50., 
-	}
+    '0p1pc' : .1,
+    '1pc' : 1.0,
+    '2p5pc' : 2.5,
+    '5pc'   : 5.0,
+    '10pc'  : 10.,
+    '25pc'  : 25.,
+    '50pc'  : 50., 
+}
 
 checks = {
 	5.0 : 'checks_5pc' ,
 	10. : 'checks_10pc',
-	25. : 'checks_25pc',	
+	#25. : 'checks_25pc',	
 }
 
 xsections = ROOT.TFile(os.path.expandvars(
@@ -47,8 +47,8 @@ xsections = ROOT.TFile(os.path.expandvars(
 neg_ratio = ROOT.TFile(os.path.expandvars(
     '$CMSSW_BASE/src/CombineHarvester/Httbar/data/Spin0_SEweight_and_NegEvtsFrac_vs_mass.root'))
 		
-
-widths = np.arange(2.5,50,0.5)
+widths = np.arange(2.5,25,0.5)
+#widths = np.arange(2.5,50,0.5)
 val2name = lambda x: "%s%s" % (str(x).replace('.','p').replace('p0',''),"pc")
 if args.single:
 	widths = [args.single]
@@ -122,6 +122,7 @@ for category in [i.GetName() for i in infile.GetListOfKeys()]:
 	 for shape in shapes[_type]:
 	  # print shape
 	  k, w = get_info(shape)
+	  #set_trace()
 	  if k not in shapes_map[_type]:
 	   shapes_map[_type][k] = {}
 	  shapes_map[_type][k][w] = indir.Get(shape)
