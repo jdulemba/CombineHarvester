@@ -98,6 +98,7 @@ def graph2arr(graph):
 	return array(xs), array(ys)
 
 def graph_interpolation(width, file_int, parity, name_format, interpolation):
+	if 'checks_' in width: width = width.replace('checks_', '')
 	width_value = name2val(width)
 	above = min(i for i in widths_vals if i > width_value)
 	below = max(i for i in widths_vals if i < width_value)
