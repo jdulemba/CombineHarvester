@@ -48,9 +48,16 @@ lumi_unc = 1.025
 #shape
 common_shape_uncs = [
 	'CMS_pileup', 
+	'CMS_prefire', 
 	#BTAG
 	'CMS_eff_b_13TeV', 
 	'CMS_fake_b_13TeV', 
+	#JER
+	'CMS_res_j_13TeV',
+	#MET
+	'CMS_METunclustered_13TeV',
+	#JES
+	'CMS_scale_j_13TeV',
 ]
 lj_by_lepton_uncs = {
 	'mu' : ['CMS_eff_trigger_m', 'CMS_eff_reco_m'],
@@ -68,6 +75,7 @@ common_tt_shape_uncs = [
 	# Theory
         'Hdamp_TT', 'TMass', 'QCDscaleMERenormFactor_TT',
         'QCDscaleMERenorm_TT', 'QCDscaleMEFactor_TT',
+        'FSR_TT', 'ISR_TT', 'UE_TT'
 
 		##
 	#'CMS_httbar_PDF_alphaS', 'CMS_httbar_PDF_1', 'CMS_httbar_PDF_2', 
@@ -75,34 +83,34 @@ common_tt_shape_uncs = [
 	#'TMass', 'QCDscaleMERenorm_TT', 'QCDscaleMEFactor_TT',
 	#'CMS_TopPt1_TT', 'CMS_TopPt2_TT',
 		##
-	#JES
-	'CMS_scale_j_13TeV',
-		##
-	#'CMS_scale_j_13TeV_AbsoluteStat',
-	#'CMS_scale_j_13TeV_AbsoluteScale',
-	#'CMS_scale_j_13TeV_AbsoluteMPFBias',
-	#'CMS_scale_j_13TeV_Fragmentation',
-	#'CMS_scale_j_13TeV_SinglePionECAL',
-	#'CMS_scale_j_13TeV_SinglePionHCAL',
-	#'CMS_scale_j_13TeV_FlavorQCD',
-	#'CMS_scale_j_13TeV_TimePtEta',
-	#'CMS_scale_j_13TeV_RelativeJEREC1',
-	#'CMS_scale_j_13TeV_RelativePtBB',
-	#'CMS_scale_j_13TeV_RelativePtEC1',
-	#'CMS_scale_j_13TeV_RelativeBal',
-	#'CMS_scale_j_13TeV_RelativeFSR',
-	#'CMS_scale_j_13TeV_RelativeStatFSR',
-	#'CMS_scale_j_13TeV_RelativeStatEC',
-	#'CMS_scale_j_13TeV_PileUpDataMC',
-	#'CMS_scale_j_13TeV_PileUpPtRef',
-	#'CMS_scale_j_13TeV_PileUpPtBB',
-	#'CMS_scale_j_13TeV_PileUpPtEC1',
+	##JES
+	#'CMS_scale_j_13TeV',
+	#	##
+	##'CMS_scale_j_13TeV_AbsoluteStat',
+	##'CMS_scale_j_13TeV_AbsoluteScale',
+	##'CMS_scale_j_13TeV_AbsoluteMPFBias',
+	##'CMS_scale_j_13TeV_Fragmentation',
+	##'CMS_scale_j_13TeV_SinglePionECAL',
+	##'CMS_scale_j_13TeV_SinglePionHCAL',
+	##'CMS_scale_j_13TeV_FlavorQCD',
+	##'CMS_scale_j_13TeV_TimePtEta',
+	##'CMS_scale_j_13TeV_RelativeJEREC1',
+	##'CMS_scale_j_13TeV_RelativePtBB',
+	##'CMS_scale_j_13TeV_RelativePtEC1',
+	##'CMS_scale_j_13TeV_RelativeBal',
+	##'CMS_scale_j_13TeV_RelativeFSR',
+	##'CMS_scale_j_13TeV_RelativeStatFSR',
+	##'CMS_scale_j_13TeV_RelativeStatEC',
+	##'CMS_scale_j_13TeV_PileUpDataMC',
+	##'CMS_scale_j_13TeV_PileUpPtRef',
+	##'CMS_scale_j_13TeV_PileUpPtBB',
+	##'CMS_scale_j_13TeV_PileUpPtEC1',
 		##
 
-	#JER
-	'CMS_res_j_13TeV',
-	#MET
-	'CMS_METunclustered_13TeV'
+	##JER
+	#'CMS_res_j_13TeV',
+	##MET
+	#'CMS_METunclustered_13TeV'
 ]
 ll_shape_uncertainties_tt = []
 lj_shape_uncertainties_tt = [] #missing top pt! #should also LJ remove it?
