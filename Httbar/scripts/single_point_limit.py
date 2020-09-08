@@ -43,8 +43,9 @@ syscall('make_point.sh {} {} {} TESTME {}:{}:{}:1. ""'.format(
 
 syscall(
 	'hadd -f templates_ALL_POINT.root TESTME.root '
-    '%s/src/CombineHarvester/Httbar/data/templates_l?_%s_bkg_%s.root' % (
+    '%s/src/CombineHarvester/Httbar/data/%s/templates_l?_%s_bkg_%s.root' % (
 		os.environ['CMSSW_BASE'],
+        args.jobid,
         args.njets,
 		args.jobid
 		))

@@ -34,9 +34,9 @@ syscall('make_point.sh {} TESTME {}:{}:{} ""'.format(
 		))
 syscall(
 	'hadd -f templates_ALL_POINT.root TESTME.root '
-	'%s/src/CombineHarvester/Httbar/data/templates_l?_bkg_%s.root' % (
+	'%s/src/CombineHarvester/Httbar/data/%s/templates_l?_bkg_%s.root' % (
 		os.environ['CMSSW_BASE'],
-		args.jobid
+		args.jobid, args.jobid,
 		))
 
 syscall('make_fake_data.py templates_ALL_POINT.root "%s"' % args.extern)

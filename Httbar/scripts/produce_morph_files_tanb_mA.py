@@ -101,8 +101,8 @@ with open(args.input_sushi) as sushi_pkl:
 	syscall('make_point.sh {} None {} TESTME A:{}:{}:{} H:{}:{}:{}'.format(args.jobid, args.njets, mA, widthA, kFactorA, mH, widthH, kFactorH))
 	syscall(
 		'hadd -f templates_ALL_POINT.root TESTME.root '
-		'%s/src/CombineHarvester/Httbar/data/templates_l?_%s_bkg_%s.root' % (
-			os.environ['CMSSW_BASE'], args.njets, args.jobid
+		'%s/src/CombineHarvester/Httbar/data/%s/templates_l?_%s_bkg_%s.root' % (
+			os.environ['CMSSW_BASE'], args.jobid, args.njets, args.jobid
 			)
 		)
 	print '\n\ncreating workspace\n\n'

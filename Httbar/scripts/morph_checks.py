@@ -39,18 +39,18 @@ for njet in njets:
     for chan in channels:
         for boson in bosons:
             # get the FullSim point
-            syscall('morph_mass.py {PROJDIR}/data/templates_{CHAN}_{NJETS}_sig_{JOBID}.root  {PROJDIR}/data/templates_{CHAN}_{NJETS}_bkg_{JOBID}.root {BOSON} --algo NonLinearPosFractions --input_masses 400,500,600,750 --single {MASS} --nosystematics'.format(PROJDIR=proj_dir, CHAN=chan, NJETS=njet, JOBID=jobid, MASS=args.mass, BOSON=boson))
+            syscall('morph_mass.py {PROJDIR}/data/{JOBID}/templates_{CHAN}_{NJETS}_sig_{JOBID}.root  {PROJDIR}/data/{JOBID}/templates_{CHAN}_{NJETS}_bkg_{JOBID}.root {BOSON} --algo NonLinearPosFractions --input_masses 400,500,600,750 --single {MASS} --nosystematics'.format(PROJDIR=proj_dir, CHAN=chan, NJETS=njet, JOBID=jobid, MASS=args.mass, BOSON=boson))
             
             # make the mass morphed of the same point
-            syscall('morph_mass.py {PROJDIR}/data/templates_{CHAN}_{NJETS}_sig_{JOBID}.root  {PROJDIR}/data/templates_{CHAN}_{NJETS}_bkg_{JOBID}.root {BOSON} --algo NonLinearPosFractions --input_masses 400,500,600,750 --fortesting {MASS} --nosystematics'.format(PROJDIR=proj_dir, CHAN=chan, NJETS=njet, JOBID=jobid, MASS=args.mass, BOSON=boson))
+            syscall('morph_mass.py {PROJDIR}/data/{JOBID}/templates_{CHAN}_{NJETS}_sig_{JOBID}.root  {PROJDIR}/data/{JOBID}/templates_{CHAN}_{NJETS}_bkg_{JOBID}.root {BOSON} --algo NonLinearPosFractions --input_masses 400,500,600,750 --fortesting {MASS} --nosystematics'.format(PROJDIR=proj_dir, CHAN=chan, NJETS=njet, JOBID=jobid, MASS=args.mass, BOSON=boson))
             
             # morph widths from the extracted 1D FullSim shapes
-            syscall('morph_widths.py {PROJDIR}/data/templates_{CHAN}_{NJETS}_sig_{JOBID}_{BOSON}_M{MASS}.root --forchecks'.format(PROJDIR=proj_dir, CHAN=chan, NJETS=njet, JOBID=jobid, MASS=args.mass, BOSON=boson))
+            syscall('morph_widths.py {PROJDIR}/data/{JOBID}/templates_{CHAN}_{NJETS}_sig_{JOBID}_{BOSON}_M{MASS}.root --forchecks'.format(PROJDIR=proj_dir, CHAN=chan, NJETS=njet, JOBID=jobid, MASS=args.mass, BOSON=boson))
             
             ## double morphin, first width
-            syscall('morph_widths.py {PROJDIR}/data/templates_{CHAN}_{NJETS}_sig_{JOBID}.root --forchecks  --nocopy --out {PROJDIR}/data/templates_{CHAN}_{NJETS}_sig_{JOBID}_widthmorphed.root'.format(PROJDIR=proj_dir, CHAN=chan, NJETS=njet, JOBID=jobid))
+            syscall('morph_widths.py {PROJDIR}/data/{JOBID}/templates_{CHAN}_{NJETS}_sig_{JOBID}.root --forchecks  --nocopy --out {PROJDIR}/data/{JOBID}/templates_{CHAN}_{NJETS}_sig_{JOBID}_widthmorphed.root'.format(PROJDIR=proj_dir, CHAN=chan, NJETS=njet, JOBID=jobid))
             # then mass
-            syscall('morph_mass.py {PROJDIR}/data/templates_{CHAN}_{NJETS}_sig_{JOBID}_widthmorphed.root  {PROJDIR}/data/templates_{CHAN}_{NJETS}_bkg_{JOBID}.root {BOSON} --algo NonLinearPosFractions --fortesting {MASS} --nosystematics --out {PROJDIR}/data/templates_{CHAN}_{NJETS}_sig_{JOBID}_{BOSON}_M{MASS}_doublemorphed.root'.format(PROJDIR=proj_dir, CHAN=chan, NJETS=njet, JOBID=jobid, MASS=args.mass, BOSON=boson))
+            syscall('morph_mass.py {PROJDIR}/data/{JOBID}/templates_{CHAN}_{NJETS}_sig_{JOBID}_widthmorphed.root  {PROJDIR}/data/{JOBID}/templates_{CHAN}_{NJETS}_bkg_{JOBID}.root {BOSON} --algo NonLinearPosFractions --fortesting {MASS} --nosystematics --out {PROJDIR}/data/{JOBID}/templates_{CHAN}_{NJETS}_sig_{JOBID}_{BOSON}_M{MASS}_doublemorphed.root'.format(PROJDIR=proj_dir, CHAN=chan, NJETS=njet, JOBID=jobid, MASS=args.mass, BOSON=boson))
             
             # make plots
             syscall('plot_morph_check.py {PROJDIR}/data/templates_{CHAN}_{NJETS}_sig_{JOBID}_{BOSON}_M{MASS}.root {PROJDIR}/data/templates_{CHAN}_{NJETS}_sig_{JOBID}_{BOSON}_mass_morph_testing.root {PROJDIR}/data/templates_{CHAN}_{NJETS}_sig_{JOBID}_{BOSON}_M{MASS}_width_morphed.root {PROJDIR}/data/templates_{CHAN}_{NJETS}_sig_{JOBID}_{BOSON}_M{MASS}_doublemorphed.root {CHECKDIR} {BOSON} --mass={MASS}'.format(PROJDIR=proj_dir, CHAN=chan, NJETS=njet, JOBID=jobid, MASS=args.mass, CHECKDIR=checkdir, BOSON=boson))
