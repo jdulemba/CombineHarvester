@@ -4,7 +4,10 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 1. Computing model independent limits:
    a) Create condor.jdl file
 
-	python scripts/batch_independent_scan.py {outdir} 'A,H' '400:751:50' '0.5,1,2.5,5,10,25' {njets} --runScan --twoPars --barlowBeeston --channels=lj
+        For running all points
+	python scripts/batch_independent_scan.py {outdir} 'A,H' '400:751:50' '0.5,1,2.5,5,10,25' {njets} --runScan --twoPars --barlowBeeston --channels=lj --keep_nominal
+        For evaluating only impacts for generated samples
+	python scripts/batch_independent_scan.py {outdir} 'A,H' '400,500,600,750' '0.5,1,2.5,5,10,25' {njets} --runScan --twoPars --barlowBeeston --channels=lj --keep_all
 
 	where {jobid} is part of the template file after sig/bkg_
 
@@ -26,6 +29,7 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
    a) If files didn't finish correctly a condor.rescue.jdl file will be created, resubmit it
    b) If files finished correctly a summary.npy file will be created that has all the limit info
 
+
 3. Making plots:
 
    a) To make limits plots:
@@ -36,6 +40,12 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 
    b) To make z-score plots:
 	python scripts/htt_limit_outlier_plotter.py {outdir}
+
+4. Making Impact plots:
+    python scripts/batch_submit_impacts.py {outdir}
+    submit from IMPACTS directory
+
+
 '''
 
 
