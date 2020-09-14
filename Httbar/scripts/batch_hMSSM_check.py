@@ -96,6 +96,8 @@ import numpy as np
 for key, item in summary.items():
 	mA, tanb = key
 	if item:
+		#set_trace()
+        print "mA={MASS}, tanB={TANB}".format(MASS=mA, TANB=tanb)
 		vals_list.append(tuple([mA, tanb] + [i[0] for i in item[0]] + [i[0] if i else MAX_LIM for i in item[1]] + [i[1] if len(i) > 1 else (MAX_LIM if j else np.nan) for i, j in zip(item[0], item[1])]))
 	else:
 		vals_list.append(tuple([mA, tanb] + [np.nan for _ in lims]*3))
