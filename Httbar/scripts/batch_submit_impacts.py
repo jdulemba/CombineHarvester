@@ -67,28 +67,29 @@ executable = %s/batch_job.sh
     idx = 0
     for point in points:
         parity, mass, width = point.split('_')
-        if os.path.isfile('%s/impacts_%s/impacts_%s.pdf' % (outdir, point, point)):
+        if os.path.isfile('%s/impacts_%s.pdf' % (outdir, point)):
             print 'Impacts for %s, %s, %s already evaluated' % (parity, mass, width)
             continue
 
             # find corresponding point in limit
-        lim = [lim for lim in limits if lim.tolist()[0:3] == (parity, int(mass), name2val(width))][0]
+        lim = [lim for lim in limits if lim.tolist()[0:3] == (parity, int(mass), name2val(width))]
+        if not lim:
+            print 'Limit for %s, %s, %s not available, skipping' % (parity, mass, width)
+            continue
+        lim = lim[0]
         expected_g = round(lim[6], 5) # expected median limit to fix in impacts
-
-            ## copy tar file to IMPACTS dir
-        os.system('cp %s/%s.tar %s' % (orig_jobdir, point, outdir))
 
         jdl.write("""
 Output = con_{idx}.out
 Error = con_{idx}.err
 Log = con_{idx}.log
-Arguments = {TFILE} {MASS} {COUPLING}
+Arguments = {TARFILE} {MASS} {COUPLING} {POINT}
 Queue
 """.format(
         idx=idx,
-        TFILE='%s.tar' % point,
-        #TFILE='%s/%s.tar' % (orig_jobdir, point),
+        TARFILE='%s/%s.tar' % (orig_jobdir, point),
         MASS=mass,
         COUPLING=expected_g,
+        POINT=point,
         ))
         idx += 1
