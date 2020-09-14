@@ -1,6 +1,6 @@
 #! /bin/bash
 
-filter=${4:-"UNSET"}
+filter=${5:-"UNSET"}
 echo 'filter - '$filter
 
 set -o nounset
@@ -9,7 +9,7 @@ set -o errexit
 tarfile=$1
 mass=$2
 coupling=$3
-filename="${tarfile%.*}"
+filename=$4
 
 echo 'creating directory'
 mkdir -p impacts_$filename
