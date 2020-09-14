@@ -15,7 +15,6 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 from CombineHarvester.Httbar.smoothutils import AdaptiveRebinner, ReaderUnrolled, Smoother
 
-
 if __name__ == '__main__':
     
     ROOT.gROOT.SetBatch(True)
