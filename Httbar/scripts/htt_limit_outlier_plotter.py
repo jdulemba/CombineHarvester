@@ -77,8 +77,8 @@ for key, submit in block_map.iteritems():
 	consec = np.hstack([-1, consec, len(lim0p5_idx)-1])
 	consec = np.vstack([consec[:-1]+1, consec[1:]]).T
 	consec = consec.astype(np.int64)
-	first_inds = lim0p5_idx[consec][:,0] # first indices of consecutive indices (could be standalone values)
-	last_inds = lim0p5_idx[consec][:,1] # first indices of consecutive indices (could be standalone values)
+	first_inds = lim0p5_idx[consec][:,0] if lim0p5_idx.any() else lim0p5_idx # first indices of consecutive indices (could be standalone values)
+	last_inds = lim0p5_idx[consec][:,1] if lim0p5_idx.any() else lim0p5_idx # first indices of consecutive indices (could be standalone values)
 	# large jump from previous CLs value
 	cls_jump = [abs(observed_cls[idx]-observed_cls[idx-1]) > 0.2 for idx in first_inds]
 	#set_trace() 
