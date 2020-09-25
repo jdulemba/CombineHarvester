@@ -19,14 +19,14 @@ echo 'untarring files'
 tar -xf $tarfile
 
 echo 'Running initial fit:'
-echo "  combineTool.py -M Impacts -d */$mass/workspace.root -m $mass --cminPreScan --X-rtd MINIMIZER_analytic --doInitialFit --robustFit 1 -t -1 --expectSignal=1 --setParameters g=$coupling --freezeParameters g  --redefineSignalPOIs r > initial_fit.log"
-combineTool.py -M Impacts -d */$mass/workspace.root -m $mass --cminPreScan --X-rtd MINIMIZER_analytic --doInitialFit --robustFit 1 -t -1 --expectSignal=1 --setParameters g=$coupling --freezeParameters g  --redefineSignalPOIs r > initial_fit.log
+echo "  combineTool.py -M Impacts -d */$mass/workspace.root -m $mass --cminPreScan --X-rtd MINIMIZER_analytic --doInitialFit --robustFit 1 -t -1 --expectSignal=1 --setParameters g=$coupling,r=1 --freezeParameters r  --redefineSignalPOIs g > initial_fit.log"
+combineTool.py -M Impacts -d */$mass/workspace.root -m $mass --cminPreScan --X-rtd MINIMIZER_analytic --doInitialFit --robustFit 1 -t -1 --expectSignal=1 --setParameters g=$coupling,r=1 --freezeParameters r  --redefineSignalPOIs g > initial_fit.log
 if [ "$filter" == "UNSET" ]; then
 		echo '  Running impacts:'
-        echo "      combineTool.py -M Impacts -d */$mass/workspace.root -m $mass --X-rtd MINIMIZER_analytic --robustFit 1 --cminPreScan --doFits --parallel 8 -t -1 --expectSignal=1 --setParameters g=$coupling --freezeParameters g  --redefineSignalPOIs r &> impacts.log"
-		combineTool.py -M Impacts -d */$mass/workspace.root -m $mass --X-rtd MINIMIZER_analytic --robustFit 1 --cminPreScan --doFits --parallel 8 -t -1 --expectSignal=1 --setParameters g=$coupling --freezeParameters g  --redefineSignalPOIs r &> impacts.log
+		echo "       combineTool.py -M Impacts -d */$mass/workspace.root -m $mass --X-rtd MINIMIZER_analytic --robustFit 1 --cminPreScan --doFits --parallel 8 -t -1 --expectSignal=1 --setParameters g=$coupling,r=1 --freezeParameters r  --redefineSignalPOIs g &> impacts.log"
+		combineTool.py -M Impacts -d */$mass/workspace.root -m $mass --X-rtd MINIMIZER_analytic --robustFit 1 --cminPreScan --doFits --parallel 8 -t -1 --expectSignal=1 --setParameters g=$coupling,r=1 --freezeParameters r  --redefineSignalPOIs g &> impacts.log
 		echo '  Making json'
-		combineTool.py -M Impacts -d */$mass/workspace.root -m $mass  --redefineSignalPOIs r -o impacts_$filename.json
+		combineTool.py -M Impacts -d */$mass/workspace.root -m $mass  --redefineSignalPOIs g -o impacts_$filename.json
 else
 		echo '  Running impacts:'
         echo "      combineTool.py -M Impacts -d */$mass/workspace.root -m $mass --X-rtd MINIMIZER_analytic --robustFit 1 --cminPreScan --doFits --parallel 8 -t -1 --expectSignal=1 --setParameters g={$coupling} --freezeParameters g  --redefineSignalPOIs r --filter=$filter &> impacts.log"
