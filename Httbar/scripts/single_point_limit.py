@@ -37,6 +37,7 @@ args = parser.parse_args()
 
 val2name = lambda x: str(x).replace('.','p').replace('p0','')
 
+#set_trace()
 syscall('make_point.sh {} {} {} TESTME {}:{}:{}:1. ""'.format(
 		args.jobid, args.kfactor, args.njets, args.parity, args.mass, args.width
 		))
@@ -49,6 +50,7 @@ syscall(
         args.njets,
 		args.jobid
 		))
+#set_trace()
 
 if args.extern:
 	syscall('externalize.py templates_ALL_POINT.root %s' % args.extern)
@@ -64,6 +66,7 @@ if args.ignore:
 if args.barlowBeeston:
 	opts += "--noBBB "
 
+#set_trace()
 syscall((
 		'setup_common.py POINT --parity={} --indir=./ --limitdir=./'
 		' --masses="{}" --widths="{}" {}').format(
@@ -71,6 +74,7 @@ syscall((
 		opts
 		))
 
+#set_trace()
 interference = '.CombineTools.InterferencePlusFixed:interferencePlusFixed' if args.twoPars else '.CombineTools.InterferenceModel:interferenceModel'
 
 syscall((
