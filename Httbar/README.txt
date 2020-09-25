@@ -33,16 +33,14 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 3. Making plots:
 
    a) To make limits plots:
-	From within {outdir}, execute
-	
-	python ../scripts/model_independent_limits_ext.py summary.npy
-	python ../scripts/model_independent_limits_ext.py summary.npy --zoom_out
+	python scripts/model_independent_limits_ext.py {outdir} 
+	python scripts/model_independent_limits_ext.py {outdir} --zoom_out
 
    b) To make z-score plots:
 	python scripts/htt_limit_outlier_plotter.py {outdir}
 
 4. Making Impact plots:
-    python scripts/batch_submit_impacts.py {outdir}
+    python scripts/batch_make_impacts.py {outdir}
     submit from IMPACTS directory
 
 
