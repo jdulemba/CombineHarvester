@@ -18,9 +18,14 @@ import matplotlib.lines as mlines
 import matplotlib.ticker as ticker
 
 parser = ArgumentParser()
-parser.add_argument('input')
+parser.add_argument('jobdir', help='Directory to make plots from.')
 parser.add_argument('--zoom_out', action='store_true', help='Set ylimit max to 3.0 so the partial widths can be seen')
 args = parser.parse_args()
+
+import os
+proj_dir = os.environ['PROJECT_DIR']
+outdir = os.path.join(proj_dir, args.jobdir)
+outdir = outdir[:-1] if outdir.endswith('/') else outdir
 
 # Stolen from Andrey
 def max_g(cp, phi_mass, rel_width):
@@ -54,7 +59,8 @@ def max_g(cp, phi_mass, rel_width):
 
 xlabels = {
 	'mass' : r'm$_{\mathrm{\mathsf{%s}}}$\, [GeV]',
-	'width': r'width$_{\mathrm{\mathsf{%s}}}$\, [\%%]',
+	'width': r'$\Gamma_{\mathrm{\mathsf{%s}}}$/m$_{\mathrm{\mathsf{%s}}}$\, [\%%]',
+	#'width': r'width$_{\mathrm{\mathsf{%s}}}$\, [\%%]',
 	}
 
 addenda = {
@@ -62,7 +68,8 @@ addenda = {
 	# 'mass' : r'\textbf{width}$\boldsymbol{_{\mathrm{\mathsf{%s}}} \mathsf{= %.1f}}$\textbf{\%% }',
 	'width': r'm$_{\mathrm{\mathsf{%s}}}$ = {%d}\,GeV',
 	# 'mass' : r'Width$_{\mathrm{\mathsf{%s}} \mathsf{= %.1f}}$\%%',
-	'mass' : r'$\Gamma$/m$_{\mathrm{\mathsf{%s}}}$ = {%.1f}\%%',
+	'mass' : r'$\Gamma_{\mathrm{\mathsf{%s}}}$/m$_{\mathrm{\mathsf{%s}}}$ = {%.1f}\%%',
+	#'mass' : r'$\Gamma$/m$_{\mathrm{\mathsf{%s}}}$ = {%.1f}\%%',
 	}
 
 vartoadd = {
@@ -73,6 +80,7 @@ val2name = lambda x: ('%.1f' % x).replace('.','p').replace('p0','')
 
 def make_plot(subset, xvar, maxg_values=None):
     subset.sort(order=xvar)
+    parity = list(set(subset['parity']))[0]
     print subset
     print xvar
     x_min = subset[xvar].min()
@@ -127,7 +135,8 @@ def make_plot(subset, xvar, maxg_values=None):
     	# 		lw=0.
     	# 	), r'$\Gamma_\mathrm{t\bar t} > \Gamma_\mathrm{tot}$'))
     	# handles.append((mpatches.Patch(color='none', hatch='||', edgecolor='gray', linewidth=1.), mlines.Line2D([], [], color='gray', linestyle='-')), r'$\Gamma_\mathrm{t\bar t} > \Gamma_\mathrm{tot}$'))
-    	handles.append((mpatches.Patch(facecolor='none', hatch='||', edgecolor='gray', linewidth=1.), r'$\Gamma_\mathrm{t\bar t} > \Gamma_\mathrm{tot}$'))
+    	#handles.append((mpatches.Patch(facecolor='none', hatch='||', edgecolor='gray', linewidth=1.), r'$\Gamma_\mathrm{t\bar t} > \Gamma_\mathrm{tot}$'))
+    	handles.append((mpatches.Patch(facecolor='none', hatch='||', edgecolor='gray', linewidth=1.), r'$\Gamma_{\mathrm{\mathsf{%s}} \rightarrow \mathrm{t\bar t}} > \Gamma_{\mathrm{\mathsf{%s}}}$' % (parity, parity)))
     
     handles.append(
     	# (mpatches.Patch(color=twosigma), r'$\mathsf{\pm}$2\,s.d.\ expected')
@@ -181,14 +190,17 @@ def make_plot(subset, xvar, maxg_values=None):
     ## 	xs, [0]*len(xs), [8, 6, 5, 4.3, 3.5, 3, 2, 1.5], 
     ## 	facecolor=obs_color, edgecolor='k', linewidth=1
     ## )
-    parity = list(set(subset['parity']))[0]
+    #parity = list(set(subset['parity']))[0]
     plt.xlabel(	
-    	xlabels[xvar] % parity, fontsize=32, 
+    	xlabels[xvar] % parity if xvar == 'mass' else xlabels[xvar] % (parity, parity), fontsize=32, 
+    	#xlabels[xvar] % parity, fontsize=32, 
     	horizontalalignment='right', x=1.0, 
     )
     #by hand y label, in pyplot 1.4 it aligns properly, here not
+    #set_trace()
     plt.ylabel(
-    	r'Coupling modifier', fontsize=32, 
+    	r'g$_{\mathrm{\mathsf{%s}\mathrm{t\bar t}}}$' % parity, fontsize=32, 
+    	#r'Coupling modifier', fontsize=32, 
     	horizontalalignment='right', 
     	y=0.95 #shifts the label down just right
     )
@@ -227,7 +239,8 @@ def make_plot(subset, xvar, maxg_values=None):
     ret.append(
     	plt.text(
     	x_min+(x_max-x_min)*0.50, y_max-delta_y*.27,
-    		addenda[xvar] % (parity, other_var),
+    		addenda[xvar] % (parity, parity, other_var) if xvar == 'mass' else addenda[xvar] % (parity, other_var),
+    		#addenda[xvar] % (parity, other_var),
     		 # +r'\textbf{95\% CL Excluded}:',
     	fontsize=29,
     	horizontalalignment='left'
@@ -245,7 +258,8 @@ def make_plot(subset, xvar, maxg_values=None):
     ret.append(
     	plt.text(
     	x_max-(x_max-x_min)*0.01, y_max+0.025*delta_y,
-    	r'35.9 fb$^{\mathrm{\mathsf{-1}}}$ (13 TeV)',
+    	r'%s fb$^{\mathrm{\mathsf{-1}}}$ (13 TeV)' % lumi,
+    	#r'35.9 fb$^{\mathrm{\mathsf{-1}}}$ (13 TeV)',
     	fontsize=32,
     	horizontalalignment='right'
     	)
@@ -254,9 +268,20 @@ def make_plot(subset, xvar, maxg_values=None):
     ax.tick_params(axis='both', labelsize=29, which='both')
     return ret
 
-with open(args.input) as pkl:
-	limits = np.load(pkl)
+if not os.path.isfile(os.path.join(outdir, 'summary.npy')):
+    raise ValueError('%s not found' % os.path.join(outdir, 'summary.npy'))
+else:
+    with open(os.path.join(outdir, 'summary.npy')) as pkl:
+    	limits = np.load(pkl)
 
+if '2016' in args.jobdir:
+    lumi = 35.9
+elif '2017' in args.jobdir:
+    lumi = 41.5
+elif '2018' in args.jobdir:
+    lumi = 59.7
+else:
+    raise ValueError('Year not found in jobdir for lumi')
 
 x = lambda vv: [i for i, _ in vv]
 y = lambda vv: [i for _, i in vv]
@@ -297,10 +322,11 @@ for parity in ['A', 'H']:
 		#)
 		#set_trace()
 		plt.savefig(
-			'limit_%s_%s.png' % (parity, wname) if args.zoom_out else 'limit_%s_%s_zoom.png' % (parity, wname),
+			'%s/limit_%s_%s.png' % (outdir, parity, wname) if args.zoom_out else '%s/limit_%s_%s_zoom.png' % (outdir, parity, wname),
 			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
 			bbox_inches='tight'
 		)
+		print '%s written' % ('%s/limit_%s_%s.png' % (outdir, parity, wname) if args.zoom_out else '%s/limit_%s_%s_zoom.png' % (outdir, parity, wname))
 		plt.clf()
 	
 	for mass in masses:
@@ -337,10 +363,11 @@ for parity in ['A', 'H']:
 		#	bbox_inches='tight'
 		#)
 		plt.savefig(
-			'limit_%s_M%s.png' % (parity, mass) if args.zoom_out else 'limit_%s_M%s_zoom.png' % (parity, mass),
+			'%s/limit_%s_M%s.png' % (outdir, parity, mass) if args.zoom_out else '%s/limit_%s_M%s_zoom.png' % (outdir, parity, mass),
 			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
 			bbox_inches='tight'
 		)
+		print '%s written' % ('%s/limit_%s_M%s.png' % (outdir, parity, mass) if args.zoom_out else '%s/limit_%s_M%s_zoom.png' % (outdir, parity, mass))
 		plt.clf()
 	
 	# for style in 'obs', 'exp0':
