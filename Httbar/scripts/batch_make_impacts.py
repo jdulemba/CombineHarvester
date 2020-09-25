@@ -25,10 +25,12 @@ if os.path.isfile(os.path.join(outdir, 'condor.jdl')):
     blocks = jdl.split('\n\n')
     header = blocks[0]
     block_map = {}
+    #set_trace()
     for block in blocks[1:]:
         key = 'impacts_%s.pdf' % block.split('Arguments = ')[1].split('\n')[0].split(' ')[-1]
         block_map[key] = block
 
+    #set_trace()
     npass = 0
     fails = []
     for fname, arguments in block_map.items():
@@ -37,6 +39,7 @@ if os.path.isfile(os.path.join(outdir, 'condor.jdl')):
         else:
             npass += 1
 
+    #set_trace()
     print('''
 Successful jobs: %d
 Failed jobs: %d''' % (npass, len(fails)))
@@ -114,12 +117,12 @@ executable = %s/batch_job.sh
             expected_g = round(lim[6], 5) # expected median limit to fix in impacts
     
             jdl.write("""
-    Output = con_{idx}.out
-    Error = con_{idx}.err
-    Log = con_{idx}.log
-    Arguments = {TARFILE} {MASS} {COUPLING} {POINT}
-    Queue
-    """.format(
+Output = con_{idx}.out
+Error = con_{idx}.err
+Log = con_{idx}.log
+Arguments = {TARFILE} {MASS} {COUPLING} {POINT}
+Queue
+""".format(
             idx=idx,
             TARFILE='%s/%s.tar' % (orig_jobdir, point),
             MASS=mass,
