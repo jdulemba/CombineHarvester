@@ -24,7 +24,7 @@ HOW TO COMPUTE MODEL INDEPENDENT LIMITS FOR H/A SEARCH
 
 2. Checking output root files for correctness:
 
-   python scripts/batch_independent_check_from_root.py {outdir}
+   python scripts/batch_independent_check.py {outdir}
 
    a) If files didn't finish correctly a condor.rescue.jdl file will be created, resubmit it
    b) If files finished correctly a summary.npy file will be created that has all the limit info
