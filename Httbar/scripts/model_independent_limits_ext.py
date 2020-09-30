@@ -6,16 +6,21 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 plt.rc('text', usetex=True)
-plt.rcParams['text.latex.preamble']=[
+rcParams['text.latex.preamble']=[
 	r"\usepackage{amsmath}",
 ]
-plt.rcParams["mathtext.default"] = 'regular'
-# plt.rcParams["mathtext.fontset"] = "stix"
+rcParams["mathtext.default"] = 'regular'
+#rcParams["mathtext.fontset"] = "stix"
 plt.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+rcParams[u'ytick.minor.visible'] = True
+rcParams["savefig.format"] = 'png'
+rcParams["savefig.bbox"] = 'tight'
 import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 import matplotlib.ticker as ticker
+#set_trace()
 
 parser = ArgumentParser()
 parser.add_argument('jobdir', help='Directory to make plots from.')
@@ -104,6 +109,8 @@ def make_plot(subset, xvar, maxg_values=None):
     ax.yaxis.set_major_formatter(
     	ticker.FormatStrFormatter("%.1f")
     	)
+    #ax.yaxis.set_minor_locator(ticker.AutoMinorLocator(5))
+    ax.yaxis.set_minor_locator(ticker.MultipleLocator(0.05))
     handles = []
     
     # #FIXME: add observed
@@ -125,7 +132,8 @@ def make_plot(subset, xvar, maxg_values=None):
     
     center = plt.plot(subset[xvar], subset['exp0'], color='blue', linestyle='-')
     handles.append(
-    	(mlines.Line2D([], [], color='blue', linestyle='-'), 'Expected')
+    	(mlines.Line2D([], [], color='k', linestyle='--'), 'Expected')
+    	#(mlines.Line2D([], [], color='blue', linestyle='-'), 'Expected')
     	)
     twosig = plt.fill_between(subset[xvar], subset['exp-2'], subset['exp+2'], color=twosigma)
     
@@ -288,8 +296,10 @@ y = lambda vv: [i for _, i in vv]
 
 masses = sorted(list(set(limits['mass'])))
 widths = sorted(list(set(limits['width'])))
-onesigma = '#00f847'
-twosigma = '#fffc4d'
+onesigma = '#00cc00' # kGreen + 1
+twosigma = '#ffcc00' # kOrange
+#onesigma = '#00f847'
+#twosigma = '#fffc4d'
 line = '#ff1521'
 #set_trace()
 
@@ -321,12 +331,16 @@ for parity in ['A', 'H']:
 		#	bbox_inches='tight'
 		#)
 		#set_trace()
+		#plt.savefig(
+		#	'test',
+		#	bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
+		#)
 		plt.savefig(
-			'%s/limit_%s_%s.png' % (outdir, parity, wname) if args.zoom_out else '%s/limit_%s_%s_zoom.png' % (outdir, parity, wname),
+			'%s/limit_%s_%s' % (outdir, parity, wname) if args.zoom_out else '%s/limit_%s_%s_zoom' % (outdir, parity, wname),
 			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
-			bbox_inches='tight'
+			#bbox_inches='tight'
 		)
-		print '%s written' % ('%s/limit_%s_%s.png' % (outdir, parity, wname) if args.zoom_out else '%s/limit_%s_%s_zoom.png' % (outdir, parity, wname))
+		print '%s written' % ('%s/limit_%s_%s' % (outdir, parity, wname) if args.zoom_out else '%s/limit_%s_%s_zoom' % (outdir, parity, wname))
 		plt.clf()
 	
 	for mass in masses:
@@ -363,11 +377,11 @@ for parity in ['A', 'H']:
 		#	bbox_inches='tight'
 		#)
 		plt.savefig(
-			'%s/limit_%s_M%s.png' % (outdir, parity, mass) if args.zoom_out else '%s/limit_%s_M%s_zoom.png' % (outdir, parity, mass),
+			'%s/limit_%s_M%s' % (outdir, parity, mass) if args.zoom_out else '%s/limit_%s_M%s_zoom' % (outdir, parity, mass),
 			bbox_extra_artists=ensure_drawn, #ensure that the upper text is drawn
 			bbox_inches='tight'
 		)
-		print '%s written' % ('%s/limit_%s_M%s.png' % (outdir, parity, mass) if args.zoom_out else '%s/limit_%s_M%s_zoom.png' % (outdir, parity, mass))
+		print '%s written' % ('%s/limit_%s_M%s' % (outdir, parity, mass) if args.zoom_out else '%s/limit_%s_M%s_zoom' % (outdir, parity, mass))
 		plt.clf()
 	
 	# for style in 'obs', 'exp0':
@@ -478,7 +492,7 @@ for parity in ['A', 'H']:
 	# 		bbox_inches='tight'
 	# 	)
 	# 	plt.savefig(
-	# 		'limit_%s_2D_%s.png' % (parity, style),
+	# 		'limit_%s_2D_%s' % (parity, style),
 	# 		bbox_extra_artists=(txt,), #ensure that the upper text is drawn
 	# 		bbox_inches='tight'
 	# 	)
