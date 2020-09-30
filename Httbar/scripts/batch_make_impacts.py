@@ -130,3 +130,4 @@ Queue
             POINT=point,
             ))
             idx += 1
+    print('To submit:\ncd %s && condor_submit condor.jdl' % outdir)
